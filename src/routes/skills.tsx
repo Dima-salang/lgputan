@@ -57,6 +57,12 @@ export const skillRouter = {
       const db = ctx.db as Context['db']
       try {
         const result = await db.insert(skill).values(input).returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Skill not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)
@@ -79,6 +85,12 @@ export const skillRouter = {
           .set(input)
           .where(eq(skill.id, input.id))
           .returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Skill not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)
@@ -100,6 +112,12 @@ export const skillRouter = {
           .delete(skill)
           .where(eq(skill.id, input.id))
           .returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Skill not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)

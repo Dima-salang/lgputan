@@ -80,6 +80,12 @@ export const blogRouter = {
           .set(input)
           .where(eq(posts.id, input.id))
           .returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Post not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)
@@ -101,9 +107,18 @@ export const blogRouter = {
           .delete(posts)
           .where(eq(posts.id, input.id))
           .returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Post not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to delete post',

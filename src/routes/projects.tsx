@@ -60,6 +60,12 @@ export const projectRouter = {
       const db = ctx.db as Context['db']
       try {
         const result = await db.insert(projects).values(input).returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Project not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)

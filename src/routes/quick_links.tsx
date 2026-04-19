@@ -47,6 +47,12 @@ export const quickLinksRouter = ({
         try {
             const db = ctx.db as Context['db']
             const result = await db.insert(quick_links).values(input).returning()
+            if (!result[0]) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: 'Quick link not found',
+                })
+            }
             return result[0]
         } catch (error) {
             console.error(error)
@@ -64,6 +70,12 @@ export const quickLinksRouter = ({
             const db = ctx.db as Context['db']
             const result = await db.delete(quick_links).where(eq(quick_links.id, input.id)).returning()
             if (result.length === 0) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: 'Quick link not found',
+                })
+            }
+            if (!result[0]) {
                 throw new TRPCError({
                     code: 'NOT_FOUND',
                     message: 'Quick link not found',
