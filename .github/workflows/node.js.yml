@@ -22,6 +22,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
+      env:
+        JWT_SECRET: "dev-secret-key-change-in-production"
+        ADMIN_PASSWORD_HASH: "$2a$12$yB7LG50/nzzfQQzxHpds.eyt7lH3Io6hJTVxwaUUfHlqvwY9KBK/q"
+        ADMIN_PASSWORD: "admin"
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
