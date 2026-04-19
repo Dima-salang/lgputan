@@ -1,15 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import { Separator } from '#/components/ui/separator'
-import {
-  Terminal,
-  Code2,
-  FolderOpen,
-  Database,
-  Cpu,
-  Globe,
-  Layers,
-} from 'lucide-react'
+import { trpc } from '#/integrations/trpc/react'
+import { Terminal, Code2, FolderOpen, Layers } from 'lucide-react'
 import { TerminalWindow } from '#/components/TerminalWindow'
 import { ProjectCard } from '#/components/ProjectCard'
 import { ProfileCard } from '#/components/ProfileCard'
@@ -72,6 +65,8 @@ function NavCommand({
 }
 
 function App() {
+  const { data: skills } = trpc.skills.getSkills.useQuery()
+
   return (
     <div className="page-wrap py-8 sm:py-12">
       <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-12">
@@ -141,12 +136,9 @@ function App() {
               Tech Stack
             </h3>
             <div className="flex flex-wrap gap-1.5">
-              <SkillBadge icon={Code2} label="TypeScript" />
-              <SkillBadge icon={Code2} label="React" />
-              <SkillBadge icon={Database} label="PostgreSQL" />
-              <SkillBadge icon={Cpu} label="Go" />
-              <SkillBadge icon={Globe} label="HTTP" />
-              <SkillBadge icon={Layers} label="Docker" />
+              {skills?.map((skill) => (
+                <SkillBadge key={skill.id} icon={Code2} label={skill.name} />
+              ))}
             </div>
           </section>
 
