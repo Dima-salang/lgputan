@@ -10,16 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SkillsRouteImport } from './routes/skills'
+import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProjectsProjectsRouteImport } from './routes/projects/projects'
 import { Route as BlogIdRouteImport } from './routes/blog.$id'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
 const SkillsRoute = SkillsRouteImport.update({
   id: '/skills',
   path: '/skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogRoute = BlogRouteImport.update({
@@ -37,11 +42,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsProjectsRoute = ProjectsProjectsRouteImport.update({
-  id: '/projects/projects',
-  path: '/projects/projects',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BlogIdRoute = BlogIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -57,18 +57,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/blog/$id': typeof BlogIdRoute
-  '/projects/projects': typeof ProjectsProjectsRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/blog/$id': typeof BlogIdRoute
-  '/projects/projects': typeof ProjectsProjectsRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
@@ -76,9 +76,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/blog/$id': typeof BlogIdRoute
-  '/projects/projects': typeof ProjectsProjectsRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
@@ -87,27 +87,27 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/blog'
+    | '/projects'
     | '/skills'
     | '/blog/$id'
-    | '/projects/projects'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/blog'
+    | '/projects'
     | '/skills'
     | '/blog/$id'
-    | '/projects/projects'
     | '/api/trpc/$'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/blog'
+    | '/projects'
     | '/skills'
     | '/blog/$id'
-    | '/projects/projects'
     | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
@@ -115,8 +115,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRouteWithChildren
+  ProjectsRoute: typeof ProjectsRoute
   SkillsRoute: typeof SkillsRoute
-  ProjectsProjectsRoute: typeof ProjectsProjectsRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
@@ -127,6 +127,13 @@ declare module '@tanstack/react-router' {
       path: '/skills'
       fullPath: '/skills'
       preLoaderRoute: typeof SkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog': {
@@ -148,13 +155,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/projects': {
-      id: '/projects/projects'
-      path: '/projects/projects'
-      fullPath: '/projects/projects'
-      preLoaderRoute: typeof ProjectsProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/$id': {
@@ -188,8 +188,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BlogRoute: BlogRouteWithChildren,
+  ProjectsRoute: ProjectsRoute,
   SkillsRoute: SkillsRoute,
-  ProjectsProjectsRoute: ProjectsProjectsRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport

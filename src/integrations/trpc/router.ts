@@ -4,27 +4,27 @@ import { createTRPCRouter, publicProcedure } from './init'
 
 import type { TRPCRouterRecord } from '@trpc/server'
 
-const todos = [
-  { id: 1, name: 'Get groceries' },
-  { id: 2, name: 'Buy a new phone' },
-  { id: 3, name: 'Finish the project' },
-]
-
 const todosRouter = {
-  list: publicProcedure.query(() => todos),
+  list: publicProcedure.query(() => [
+    { id: 1, name: 'Get groceries' },
+    { id: 2, name: 'Buy a new phone' },
+    { id: 3, name: 'Finish the project' },
+  ]),
   add: publicProcedure
     .input(z.object({ name: z.string() }))
     .mutation(({ input }) => {
-      const newTodo = { id: todos.length + 1, name: input.name }
-      todos.push(newTodo)
-      return newTodo
+      return { id: 3, name: input.name }
     }),
 } satisfies TRPCRouterRecord
 
 import { skillRouter } from '../../routes/skills'
+import { projectRouter } from '../../routes/projects'
+import { blogRouter } from '../../routes/blog'
 
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
   skills: skillRouter,
+  projects: projectRouter,
+  blog: blogRouter,
 })
 export type TRPCRouter = typeof trpcRouter

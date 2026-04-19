@@ -7,10 +7,14 @@ import { posts } from '../models/post'
 import { projects } from '../models/project'
 
 export async function getDb() {
-    try {
-        const db = drizzle(process.env.DATABASE_URL!, { schema: { skill, profile, posts, quick_links, projects } })
-        return db
-    } catch (error) {
-        throw error
-    }
+  try {
+    const db = drizzle(process.env.DATABASE_URL!, {
+      schema: { skill, profile, posts, quick_links, projects },
+    })
+    return db
+  } catch (error) {
+    throw error
+  }
 }
+
+export type Db = Awaited<ReturnType<typeof getDb>>
