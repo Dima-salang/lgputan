@@ -8,6 +8,8 @@ import { ProjectCard } from '#/components/ProjectCard'
 import { ProfileCard } from '#/components/ProfileCard'
 import { SkillBadge } from '#/components/SkillBadge'
 import { QuickLinks } from '#/components/QuickLinks'
+import type { Skill } from '#/models/skill'
+
 
 export const Route = createFileRoute('/')({ component: App })
 
@@ -136,9 +138,10 @@ function App() {
               Tech Stack
             </h3>
             <div className="flex flex-wrap gap-1.5">
-              {skills?.map((skill) => (
+              {skills?.map((skill: Skill) => (
                 <SkillBadge key={skill.id} icon={Code2} label={skill.name} />
               ))}
+
             </div>
           </section>
 

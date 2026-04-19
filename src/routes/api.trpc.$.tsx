@@ -1,6 +1,7 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { trpcRouter } from '#/integrations/trpc/router'
 import { createFileRoute } from '@tanstack/react-router'
+import { getDb } from '#/db'
 
 export const Route = createFileRoute('/api/trpc/$')({
   server: {
@@ -10,6 +11,7 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          createContext: async () => ({ db: await getDb() }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -20,6 +22,7 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          createContext: async () => ({ db: await getDb() }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -30,6 +33,7 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          createContext: async () => ({ db: await getDb() }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -40,6 +44,7 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          createContext: async () => ({ db: await getDb() }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -50,6 +55,7 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          createContext: async () => ({ db: await getDb() }),
           onError: ({ error }) => {
             console.error(error)
           },
