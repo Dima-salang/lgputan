@@ -90,6 +90,10 @@ describe('projectRouter', () => {
       const caller = createCaller({ db } as Context)
 
       await expect(caller.getProject({ id: 9999 })).rejects.toThrow(TRPCError)
+      await expect(caller.getProject({ id: 9999 })).rejects.toHaveProperty(
+        'code',
+        'NOT_FOUND',
+      )
     })
   })
 

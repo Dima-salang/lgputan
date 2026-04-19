@@ -86,6 +86,10 @@ describe('skillRouter', () => {
       const caller = createCaller({ db } as Context)
 
       await expect(caller.getSkill({ id: 9999 })).rejects.toThrow(TRPCError)
+      await expect(caller.getSkill({ id: 9999 })).rejects.toHaveProperty(
+        'code',
+        'NOT_FOUND',
+      )
     })
   })
 

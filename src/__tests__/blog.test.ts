@@ -83,6 +83,10 @@ describe('blogRouter', () => {
       const caller = createCaller({ db } as Context)
 
       await expect(caller.getPost({ id: 9999 })).rejects.toThrow(TRPCError)
+      await expect(caller.getPost({ id: 9999 })).rejects.toHaveProperty(
+        'code',
+        'NOT_FOUND',
+      )
     })
   })
 
