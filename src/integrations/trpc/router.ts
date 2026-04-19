@@ -20,11 +20,13 @@ const todosRouter = {
 import { skillRouter } from '../../routes/skills'
 import { projectRouter } from '../../routes/projects'
 import { blogRouter } from '../../routes/blog'
+import { authRouter } from '../../server/admin'
 
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
   skills: skillRouter,
   projects: projectRouter,
   blog: blogRouter,
+  auth: authRouter,
 })
 export type TRPCRouter = typeof trpcRouter
