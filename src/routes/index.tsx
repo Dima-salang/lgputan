@@ -1,87 +1,176 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
+import { Separator } from '#/components/ui/separator'
+import {
+  Terminal,
+  Code2,
+  FolderOpen,
+  Database,
+  Cpu,
+  Globe,
+  Layers,
+} from 'lucide-react'
+import { TerminalWindow } from '#/components/TerminalWindow'
+import { ProjectCard } from '#/components/ProjectCard'
+import { ProfileCard } from '#/components/ProfileCard'
+import { SkillBadge } from '#/components/SkillBadge'
+import { QuickLinks } from '#/components/QuickLinks'
 
 export const Route = createFileRoute('/')({ component: App })
 
+const projects = [
+  {
+    title: 'Full-Stack Platform',
+    description:
+      'A modern web application with real-time features and seamless user experience.',
+    tech: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+    status: 'active' as const,
+  },
+  {
+    title: 'API Gateway',
+    description:
+      'Scalable microservice architecture with authentication and rate limiting.',
+    tech: ['Go', 'Docker', 'Redis', 'GRPC'],
+    status: 'maintained' as const,
+  },
+  {
+    title: 'Design System',
+    description: 'Component library with accessibility and dark mode support.',
+    tech: ['React', 'Tailwind', 'Storybook'],
+    status: 'maintained' as const,
+  },
+  {
+    title: 'Data Pipeline',
+    description: 'ETL processing with real-time analytics dashboard.',
+    tech: ['Python', 'Airflow', 'ClickHouse'],
+    status: 'archived' as const,
+  },
+]
+
+function NavCommand({
+  cmd,
+  desc,
+  href,
+}: {
+  cmd: string
+  desc: string
+  href: string
+}) {
+  return (
+    <Link
+      to={href}
+      className="group flex items-start gap-3 rounded-lg p-3 -mx-3 hover:bg-[var(--link-bg-hover)] transition-all duration-200"
+    >
+      <span className="font-mono text-sm text-[var(--lagoon-deep)] shrink-0 group-hover:text-[var(--lagoon)] transition-colors">
+        {cmd}
+      </span>
+      <span className="text-sm font-medium text-[var(--foreground)]">
+        {desc}
+      </span>
+    </Link>
+  )
+}
+
 function App() {
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
-        </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-          >
-            Router Guide
-          </a>
-        </div>
-      </section>
+    <div className="page-wrap py-8 sm:py-12">
+      <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-12">
+        <div className="space-y-8">
+          <section className="rise-in" style={{ animationDelay: '0ms' }}>
+            <TerminalWindow
+              lines={[{ command: `echo "Welcome to my digital workspace"` }]}
+            />
+          </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
+          <Separator className="my-6" />
+
+          <section
+            className="rise-in space-y-4"
+            style={{ animationDelay: '100ms' }}
           >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
+            <h2 className="font-mono text-lg font-semibold flex items-center gap-2">
+              <Terminal className="size-5 text-[var(--lagoon-deep)]" />
+              <span className="text-[var(--foreground)]">Navigation</span>
             </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
-        ))}
-      </section>
+            <div className="grid gap-1 sm:grid-cols-2">
+              <NavCommand cmd="cd ./about" desc="About me" href="/about" />
+              <NavCommand
+                cmd="cd ./projects"
+                desc="View projects"
+                href="/projects"
+              />
+              <NavCommand cmd="cd ./blog" desc="Read blog posts" href="/blog" />
+            </div>
+          </section>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
-      </section>
-    </main>
+          <Separator className="my-6" />
+
+          <section
+            className="rise-in space-y-4"
+            style={{ animationDelay: '200ms' }}
+          >
+            <h2 className="font-mono text-lg font-semibold flex items-center gap-2">
+              <Code2 className="size-5 text-[var(--lagoon-deep)]" />
+              <span className="text-[var(--foreground)]">
+                Featured Projects
+              </span>
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {projects.map((project) => (
+                <ProjectCard key={project.title} {...project} />
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+          <section className="rise-in" style={{ animationDelay: '150ms' }}>
+            <ProfileCard
+              name="Guest Developer"
+              role="Full-Stack Engineer"
+              location="Remote / Worldwide"
+            />
+          </section>
+
+          <section
+            className="rise-in space-y-3"
+            style={{ animationDelay: '250ms' }}
+          >
+            <h3 className="font-mono text-sm font-semibold text-[var(--muted-foreground)] flex items-center gap-2">
+              <Layers className="size-4" />
+              Tech Stack
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              <SkillBadge icon={Code2} label="TypeScript" />
+              <SkillBadge icon={Code2} label="React" />
+              <SkillBadge icon={Database} label="PostgreSQL" />
+              <SkillBadge icon={Cpu} label="Go" />
+              <SkillBadge icon={Globe} label="HTTP" />
+              <SkillBadge icon={Layers} label="Docker" />
+            </div>
+          </section>
+
+          <section
+            className="rise-in space-y-3"
+            style={{ animationDelay: '300ms' }}
+          >
+            <h3 className="font-mono text-sm font-semibold text-[var(--muted-foreground)] flex items-center gap-2">
+              <FolderOpen className="size-4" />
+              Quick Links
+            </h3>
+            <QuickLinks
+              links={[
+                { href: 'https://github.com', label: 'GitHub', icon: 'github' },
+                {
+                  href: 'https://linkedin.com',
+                  label: 'LinkedIn',
+                  icon: 'linkedin',
+                },
+              ]}
+            />
+          </section>
+        </aside>
+      </div>
+    </div>
   )
 }
