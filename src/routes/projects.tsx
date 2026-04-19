@@ -49,7 +49,7 @@ export const projectRouter = {
 } satisfies TRPCRouterRecord
 
 
-export const projectFileRouter = createFileRoute('/projects')({
+export const Route = createFileRoute('/projects')({
   component: ProjectsPage,
 })
 

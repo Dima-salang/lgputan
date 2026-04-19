@@ -50,7 +50,7 @@ export const skillRouter = {
 
 
 // file router
-export const skillFileRouter = createFileRoute('/skills')({
+export const Route = createFileRoute('/skills')({
   component: SkillsPage,
 })
 

@@ -22,9 +22,13 @@ const todosRouter = {
 } satisfies TRPCRouterRecord
 
 import { skillRouter } from '../../routes/skills'
+import { projectRouter } from '../../routes/projects'
+import { blogRouter } from '../../routes/blog'
 
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
   skills: skillRouter,
+  projects: projectRouter,
+  blog: blogRouter,
 })
 export type TRPCRouter = typeof trpcRouter
