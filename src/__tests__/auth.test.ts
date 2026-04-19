@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import jwt from 'jsonwebtoken'
+import * as jose from 'jose'
 import { authRouter } from '#/server/admin'
 import {
   createCallerFactory,
   createTRPCRouter,
   type Context,
-} from '#/integrations/trpc/init'
+} from '#/integrations/trpc/init-server'
 import { TRPCError } from '@trpc/server'
 import {
   TEST_PASSWORD,
@@ -13,22 +13,35 @@ import {
   TEST_TOKEN_EXPIRY,
 } from './vitest.setup'
 
-function createTestToken(payload = { admin: true }, secret = TEST_JWT_SECRET) {
-  return jwt.sign(payload, secret, {
-    expiresIn: TEST_TOKEN_EXPIRY,
-  })
+const secret = new TextEncoder().encode(TEST_JWT_SECRET)
+
+async function createTestToken(
+  payload = { admin: true },
+  tokenSecret: Uint8Array = secret,
+) {
+  return await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime(TEST_TOKEN_EXPIRY)
+    .sign(tokenSecret)
 }
 
-function createWrongSecretToken() {
-  return jwt.sign({ admin: true }, 'wrong-secret', {
-    expiresIn: TEST_TOKEN_EXPIRY,
-  })
+async function createWrongSecretToken() {
+  const wrongSecret = new TextEncoder().encode('wrong-secret')
+  return await new jose.SignJWT({ admin: true })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime(TEST_TOKEN_EXPIRY)
+    .sign(wrongSecret)
 }
 
-function createExpiredToken() {
-  return jwt.sign({ admin: true }, TEST_JWT_SECRET, {
-    expiresIn: '-1s',
-  })
+async function createExpiredToken() {
+  return await new jose.SignJWT({ admin: true })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('-1s')
+    .sign(secret)
+}
+
+function createCookie(token: string) {
+  return new Headers({ cookie: `admin_token=${token}` })
 }
 
 describe('authRouter', () => {
@@ -64,10 +77,10 @@ describe('authRouter', () => {
 
   describe('verify', () => {
     it('returns valid: true for protected procedure', async () => {
-      const token = createTestToken()
+      const token = await createTestToken()
       const caller = createCaller({
         db: {} as any,
-        headers: new Headers({ authorization: `Bearer ${token}` }),
+        headers: createCookie(token),
       })
       const result = await caller.verify()
       expect(result.valid).toBe(true)
@@ -84,10 +97,10 @@ describe('authRouter', () => {
       })
     })
 
-    it('throws UNAUTHORIZED when authorization scheme is malformed', async () => {
+    it('throws UNAUTHORIZED when cookie is malformed', async () => {
       const caller = createCaller({
         db: {} as any,
-        headers: new Headers({ authorization: 'Basic abc123' }),
+        headers: new Headers({ cookie: 'invalid-cookie' }),
       })
       await expect(caller.verify()).rejects.toThrow(TRPCError)
       await expect(caller.verify()).rejects.toMatchObject({
@@ -96,10 +109,10 @@ describe('authRouter', () => {
     })
 
     it('throws UNAUTHORIZED when token is signed with wrong secret', async () => {
-      const token = createWrongSecretToken()
+      const token = await createWrongSecretToken()
       const caller = createCaller({
         db: {} as any,
-        headers: new Headers({ authorization: `Bearer ${token}` }),
+        headers: createCookie(token),
       })
       await expect(caller.verify()).rejects.toThrow(TRPCError)
       await expect(caller.verify()).rejects.toMatchObject({
@@ -108,10 +121,10 @@ describe('authRouter', () => {
     })
 
     it('throws UNAUTHORIZED when token is expired', async () => {
-      const token = createExpiredToken()
+      const token = await createExpiredToken()
       const caller = createCaller({
         db: {} as any,
-        headers: new Headers({ authorization: `Bearer ${token}` }),
+        headers: createCookie(token),
       })
       await expect(caller.verify()).rejects.toThrow(TRPCError)
       await expect(caller.verify()).rejects.toMatchObject({
@@ -120,10 +133,10 @@ describe('authRouter', () => {
     })
 
     it('throws FORBIDDEN when token payload lacks admin: true', async () => {
-      const token = createTestToken({ admin: false })
+      const token = await createTestToken({ admin: false })
       const caller = createCaller({
         db: {} as any,
-        headers: new Headers({ authorization: `Bearer ${token}` }),
+        headers: createCookie(token),
       })
       await expect(caller.verify()).rejects.toThrow(TRPCError)
       await expect(caller.verify()).rejects.toMatchObject({

@@ -7,9 +7,9 @@ import {
   createCallerFactory,
   createTRPCRouter,
   type Context,
-} from '#/integrations/trpc/init'
+} from '#/integrations/trpc/init-server'
 import { TRPCError } from '@trpc/server'
-import { quickLinksRouter } from '#/routes/quick_links'
+import { quickLinksRouter } from '#/server/routers/quick_links'
 
 const TEST_DB = './test-quick_links.db'
 

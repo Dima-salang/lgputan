@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { projectRouter } from '#/routes/projects'
+import { projectRouter } from '#/server/routers/projects'
 import {
   createCallerFactory,
   createTRPCRouter,
   type Context,
-} from '#/integrations/trpc/init'
+} from '#/integrations/trpc/init-server'
 import { drizzle } from 'drizzle-orm/libsql'
 import { createClient } from '@libsql/client'
 import { unlinkSync, existsSync } from 'node:fs'

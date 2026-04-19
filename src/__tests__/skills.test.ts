@@ -7,8 +7,8 @@ import {
   createCallerFactory,
   createTRPCRouter,
   type Context,
-} from '#/integrations/trpc/init'
-import { skillRouter } from '#/routes/skills'
+} from '#/integrations/trpc/init-server'
+import { skillRouter } from '#/server/routers/skills'
 import { TRPCError } from '@trpc/server'
 
 const TEST_DB = './test.db'
