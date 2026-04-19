@@ -11,7 +11,10 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
-          createContext: async () => ({ db: await getDb() }),
+          createContext: async () => ({
+            db: await getDb(),
+            headers: request.headers,
+          }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -22,7 +25,10 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
-          createContext: async () => ({ db: await getDb() }),
+          createContext: async () => ({
+            db: await getDb(),
+            headers: request.headers,
+          }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -33,7 +39,10 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
-          createContext: async () => ({ db: await getDb() }),
+          createContext: async () => ({
+            db: await getDb(),
+            headers: request.headers,
+          }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -44,7 +53,10 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
-          createContext: async () => ({ db: await getDb() }),
+          createContext: async () => ({
+            db: await getDb(),
+            headers: request.headers,
+          }),
           onError: ({ error }) => {
             console.error(error)
           },
@@ -55,7 +67,10 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
-          createContext: async () => ({ db: await getDb() }),
+          createContext: async () => ({
+            db: await getDb(),
+            headers: request.headers,
+          }),
           onError: ({ error }) => {
             console.error(error)
           },
