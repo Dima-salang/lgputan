@@ -35,7 +35,7 @@ async function mockDb() {
     )
   `)
 
-  return db
+  return { db, client }
 }
 
 async function seedDb(db: ReturnType<typeof drizzle>) {
@@ -46,16 +46,24 @@ async function seedDb(db: ReturnType<typeof drizzle>) {
   return db
 }
 
+type DbClient = ReturnType<typeof createClient>
+
 describe('quickLinksRouter', () => {
   let db: ReturnType<typeof drizzle>
+  let client: DbClient | undefined
   const createCaller = createCallerFactory(createTRPCRouter(quickLinksRouter))
 
   beforeEach(async () => {
-    db = await mockDb()
+    const result = await mockDb()
+    db = result.db
+    client = result.client
     await seedDb(db)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
+    if (client) {
+      await client.close()
+    }
     if (existsSync(TEST_DB)) {
       unlinkSync(TEST_DB)
     }
