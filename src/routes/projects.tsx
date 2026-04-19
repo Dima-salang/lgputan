@@ -15,62 +15,117 @@ export const projectRouter = {
     .input(z.object({ id: z.number() }))
     .query(async ({ input, ctx }) => {
       const db = ctx.db as Context['db']
-      const result = await db
-        .select()
-        .from(projects)
-        .where(eq(projects.id, input.id))
-      if (!result[0]) {
+      try {
+        const result = await db
+          .select()
+          .from(projects)
+          .where(eq(projects.id, input.id))
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Project not found',
+          })
+        }
+        return result[0]
+      } catch (error) {
+        console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Project not found',
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get project',
         })
       }
-      return result[0]
     }),
   getProjects: publicProcedure.query(async ({ ctx }) => {
     const db = ctx.db as Context['db']
-    const result_projects = await db.select().from(projects)
-    return result_projects
+    try {
+      const result_projects = await db.select().from(projects)
+      return result_projects
+    } catch (error) {
+      console.error(error)
+      if (error instanceof TRPCError) {
+        throw error
+      }
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get projects',
+      })
+    }
   }),
   addProject: publicProcedure
     .input(projectSchema)
     .mutation(async ({ input, ctx }) => {
       const db = ctx.db as Context['db']
-      const result = await db.insert(projects).values(input).returning()
-      return result[0]
+      try {
+        const result = await db.insert(projects).values(input).returning()
+        return result[0]
+      } catch (error) {
+        console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to add project',
+        })
+      }
     }),
   updateProject: publicProcedure
     .input(updateProjectSchema)
     .mutation(async ({ input, ctx }) => {
       const db = ctx.db as Context['db']
-      const result = await db
-        .update(projects)
-        .set(input)
-        .where(eq(projects.id, input.id))
-        .returning()
-      if (!result[0]) {
+      try {
+        const result = await db
+          .update(projects)
+          .set(input)
+          .where(eq(projects.id, input.id))
+          .returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Project not found',
+          })
+        }
+        return result[0]
+      } catch (error) {
+        console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Project not found',
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update project',
         })
       }
-      return result[0]
     }),
   deleteProject: publicProcedure
     .input(deleteProjectSchema)
     .mutation(async ({ input, ctx }) => {
       const db = ctx.db as Context['db']
-      const result = await db
-        .delete(projects)
-        .where(eq(projects.id, input.id))
-        .returning()
-      if (!result[0]) {
+      try {
+        const result = await db
+          .delete(projects)
+          .where(eq(projects.id, input.id))
+          .returning()
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Project not found',
+          })
+        }
+        return result[0]
+      } catch (error) {
+        console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Project not found',
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete project',
         })
       }
-      return result[0]
     }),
 } satisfies TRPCRouterRecord
 

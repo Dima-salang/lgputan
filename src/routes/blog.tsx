@@ -29,9 +29,12 @@ export const blogRouter = {
         return result[0]
       } catch (error) {
         console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Post not found',
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get post',
         })
       }
     }),
@@ -42,9 +45,12 @@ export const blogRouter = {
       return blogs
     } catch (error) {
       console.error(error)
+      if (error instanceof TRPCError) {
+        throw error
+      }
       throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: 'Posts not found',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get posts',
       })
     }
   }),
@@ -55,6 +61,9 @@ export const blogRouter = {
       return result[0]
     } catch (error) {
       console.error(error)
+      if (error instanceof TRPCError) {
+        throw error
+      }
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to add post',
@@ -74,6 +83,9 @@ export const blogRouter = {
         return result[0]
       } catch (error) {
         console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to update post',

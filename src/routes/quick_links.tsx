@@ -12,6 +12,9 @@ export const quickLinksRouter = ({
             return result
         } catch (error) {
             console.error(error)
+            if (error instanceof TRPCError) {
+                throw error
+            }
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
                 message: 'Failed to fetch quick links',
@@ -31,6 +34,9 @@ export const quickLinksRouter = ({
             return result[0]
         } catch (error) {
             console.error(error)
+            if (error instanceof TRPCError) {
+                throw error
+            }
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
                 message: 'Failed to fetch quick link',
@@ -44,6 +50,9 @@ export const quickLinksRouter = ({
             return result[0]
         } catch (error) {
             console.error(error)
+            if (error instanceof TRPCError) {
+                throw error
+            }
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
                 message: 'Failed to add quick link',
@@ -63,6 +72,9 @@ export const quickLinksRouter = ({
             return result[0]
         } catch (error) {
             console.error(error)
+            if (error instanceof TRPCError) {
+                throw error
+            }
             throw new TRPCError({
                 code: 'INTERNAL_SERVER_ERROR',
                 message: 'Failed to delete quick link',

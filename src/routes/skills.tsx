@@ -15,14 +15,25 @@ export const skillRouter = {
     .input(z.object({ id: z.number() }))
     .query(async ({ input, ctx }) => {
       const db = ctx.db as Context['db']
-      const result = await db.select().from(skill).where(eq(skill.id, input.id))
-      if (!result[0]) {
+      try {
+        const result = await db.select().from(skill).where(eq(skill.id, input.id))
+        if (!result[0]) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Skill not found',
+          })
+        }
+        return result[0]
+      } catch (error) {
+        console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Skill not found',
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to get skill',
         })
       }
-      return result[0]
     }),
   getSkills: publicProcedure.query(async ({ ctx }) => {
     const db = ctx.db as Context['db']
@@ -31,9 +42,12 @@ export const skillRouter = {
       return skills
     } catch (error) {
       console.error(error)
+      if (error instanceof TRPCError) {
+        throw error
+      }
       throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: 'Skills not found',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to get skills',
       })
     }
   }),
@@ -46,6 +60,9 @@ export const skillRouter = {
         return result[0]
       } catch (error) {
         console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to add skill',
@@ -65,6 +82,9 @@ export const skillRouter = {
         return result[0]
       } catch (error) {
         console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to update skill',
@@ -83,6 +103,9 @@ export const skillRouter = {
         return result[0]
       } catch (error) {
         console.error(error)
+        if (error instanceof TRPCError) {
+          throw error
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to delete skill',
