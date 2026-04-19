@@ -10,6 +10,9 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          onError: ({ error }) => {
+            console.error(error)
+          },
         })
       },
       POST: async ({ request }: { request: Request }) => {
@@ -17,6 +20,39 @@ export const Route = createFileRoute('/api/trpc/$')({
           req: request,
           router: trpcRouter,
           endpoint: '/api/trpc',
+          onError: ({ error }) => {
+            console.error(error)
+          },
+        })
+      },
+      OPTIONS: async ({ request }: { request: Request }) => {
+        return fetchRequestHandler({
+          req: request,
+          router: trpcRouter,
+          endpoint: '/api/trpc',
+          onError: ({ error }) => {
+            console.error(error)
+          },
+        })
+      },
+      PATCH: async ({ request }: { request: Request }) => {
+        return fetchRequestHandler({
+          req: request,
+          router: trpcRouter,
+          endpoint: '/api/trpc',
+          onError: ({ error }) => {
+            console.error(error)
+          },
+        })
+      },
+      DELETE: async ({ request }: { request: Request }) => {
+        return fetchRequestHandler({
+          req: request,
+          router: trpcRouter,
+          endpoint: '/api/trpc',
+          onError: ({ error }) => {
+            console.error(error)
+          },
         })
       },
     },
