@@ -20,11 +20,13 @@ const todosRouter = {
 import { skillRouter } from '../../routes/skills'
 import { projectRouter } from '../../routes/projects'
 import { blogRouter } from '../../routes/blog'
+import { quickLinksRouter } from '../../routes/quick_links'
 
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
   skills: skillRouter,
   projects: projectRouter,
   blog: blogRouter,
+  quickLinks: quickLinksRouter,
 })
 export type TRPCRouter = typeof trpcRouter
