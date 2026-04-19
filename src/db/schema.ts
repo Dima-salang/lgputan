@@ -10,3 +10,5 @@ export const todos = sqliteTable('todos', {
     sql`(unixepoch())`,
   ),
 })
+
+
