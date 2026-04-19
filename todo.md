@@ -3,3 +3,6 @@ portfolio
 - about
 - blog
 - projects
+
+deployment:
+- make .env.production

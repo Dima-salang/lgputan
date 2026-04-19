@@ -1,6 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import jwt from 'jsonwebtoken'
+import z from 'zod'
 import type { Db } from '../../db'
 
 export interface Context {
@@ -8,10 +9,17 @@ export interface Context {
   headers: Headers
 }
 
-const JWT_SECRET = process.env.JWT_SECRET!
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is required but not set in environment')
+}
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
+})
+
+const payloadSchema = z.object({
+  admin: z.boolean(),
 })
 
 const adminMiddleware = t.middleware(async ({ ctx, next }) => {
@@ -21,8 +29,9 @@ const adminMiddleware = t.middleware(async ({ ctx, next }) => {
   }
   const token = authHeader.slice(7)
   try {
-    const payload = jwt.verify(token, JWT_SECRET!) as { admin: boolean }
-    if (!payload.admin) {
+    const decoded = jwt.verify(token, JWT_SECRET)
+    const result = payloadSchema.safeParse(decoded)
+    if (!result.success || !result.data.admin) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'Admin access required',
