@@ -1,5 +1,16 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { drizzle } from 'drizzle-orm/libsql'
 
-import * as schema from './schema.ts'
+import { skill } from '../models/skill'
+import { profile } from '../models/profile'
+import { quick_links } from '../models/quick_link'
+import { posts } from '../models/post'
+import { projects } from '../models/project'
 
-export const db = drizzle(process.env.DATABASE_URL!, { schema })
+export async function getDb() {
+    try {
+        const db = drizzle(process.env.DATABASE_URL!, { schema: { skill, profile, posts, quick_links, projects } })
+        return db
+    } catch (error) {
+        throw error
+    }
+}
