@@ -1,6 +1,5 @@
-import { publicProcedure } from '#/integrations/trpc/init'
+import { publicProcedure, type Context } from '#/integrations/trpc/init'
 import { TRPCError, type TRPCRouterRecord } from '@trpc/server'
-import { getDb } from '#/db'
 import {
   posts,
   postSchema,
@@ -14,8 +13,8 @@ import { createFileRoute } from '@tanstack/react-router'
 export const blogRouter = {
   getPost: publicProcedure
     .input(z.object({ id: z.number() }))
-    .query(async ({ input }) => {
-      const db = await getDb()
+    .query(async ({ input, ctx }) => {
+      const db = ctx.db as Context['db']
       try {
         const result = await db
           .select()
@@ -30,8 +29,8 @@ export const blogRouter = {
         })
       }
     }),
-  getPosts: publicProcedure.query(async () => {
-    const db = await getDb()
+  getPosts: publicProcedure.query(async ({ ctx }) => {
+    const db = ctx.db as Context['db']
     try {
       const blogs = await db.select().from(posts)
       return blogs
@@ -43,8 +42,8 @@ export const blogRouter = {
       })
     }
   }),
-  addPost: publicProcedure.input(postSchema).mutation(async ({ input }) => {
-    const db = await getDb()
+  addPost: publicProcedure.input(postSchema).mutation(async ({ input, ctx }) => {
+    const db = ctx.db as Context['db']
     try {
       const result = await db.insert(posts).values(input).returning()
       return result[0]
@@ -58,8 +57,8 @@ export const blogRouter = {
   }),
   updatePost: publicProcedure
     .input(updatePostSchema)
-    .mutation(async ({ input }) => {
-      const db = await getDb()
+    .mutation(async ({ input, ctx }) => {
+      const db = ctx.db as Context['db']
       try {
         const result = await db
           .update(posts)
@@ -77,8 +76,8 @@ export const blogRouter = {
     }),
   deletePost: publicProcedure
     .input(deletePostSchema)
-    .mutation(async ({ input }) => {
-      const db = await getDb()
+    .mutation(async ({ input, ctx }) => {
+      const db = ctx.db as Context['db']
       try {
         const result = await db
           .delete(posts)
