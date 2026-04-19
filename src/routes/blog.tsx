@@ -20,6 +20,12 @@ export const blogRouter = {
           .select()
           .from(posts)
           .where(eq(posts.id, input.id))
+        if (result.length === 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Post not found',
+          })
+        }
         return result[0]
       } catch (error) {
         console.error(error)
