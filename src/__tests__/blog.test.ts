@@ -55,6 +55,7 @@ describe('blogRouter', () => {
 
   afterEach(() => {
     if (existsSync(TEST_DB)) {
+      db.$client.close()
       unlinkSync(TEST_DB)
     }
   })

@@ -57,6 +57,8 @@ describe('skillRouter', () => {
 
   afterEach(() => {
     if (existsSync(TEST_DB)) {
+      // close db client
+      db.$client.close()
       unlinkSync(TEST_DB)
     }
   })
