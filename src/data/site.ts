@@ -15,7 +15,7 @@ export const site = {
   email: 'putan.lgab@gmail.com',
   github: 'https://github.com/Dima-salang',
   githubHandle: 'Dima-salang',
-  availability: 'Open to hiring',
+  availability: 'Open to work',
   intro:
     'I build small, useful tools for learning, reading, and focus — and I care about how they feel to use.',
   seo: {
@@ -41,7 +41,7 @@ export const now = [
 export const principles = [
   'Pragmatism and simplicity first.',
   'Finish small things instead of starting big ones.',
-  'Keep the interface quiet and the code easy to read.',
+  'Err, and err, and err, but less, and less, and less.',
 ]
 
 export const pages = [

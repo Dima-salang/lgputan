@@ -1,9 +1,4 @@
 # lgputan
-
-Personal site for Luis Gabrielle Putan. Built with Astro, React islands, Tailwind CSS, and Markdown content.
-
-There is no database, API, authentication, or admin panel. Everything is static and committed to the repository.
-
 ## Commands
 
 ```bash
