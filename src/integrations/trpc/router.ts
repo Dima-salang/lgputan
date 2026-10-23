@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { createTRPCRouter, publicProcedure } from './init'
+import { createTRPCRouter, publicProcedure } from './init-server'
 
 import type { TRPCRouterRecord } from '@trpc/server'
 
@@ -17,10 +17,11 @@ const todosRouter = {
     }),
 } satisfies TRPCRouterRecord
 
-import { skillRouter } from '../../routes/skills'
-import { projectRouter } from '../../routes/projects'
-import { blogRouter } from '../../routes/blog'
+import { skillRouter } from '../../server/routers/skills'
+import { projectRouter } from '../../server/routers/projects'
+import { blogRouter } from '../../server/routers/blog'
 import { authRouter } from '../../server/admin'
+import { quickLinksRouter } from '../../server/routers/quick_links'
 
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
@@ -28,5 +29,6 @@ export const trpcRouter = createTRPCRouter({
   projects: projectRouter,
   blog: blogRouter,
   auth: authRouter,
+  quickLinks: quickLinksRouter,
 })
 export type TRPCRouter = typeof trpcRouter

@@ -1,7 +1,10 @@
+import { config } from 'dotenv'
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { trpcRouter } from '#/integrations/trpc/router'
 import { createFileRoute } from '@tanstack/react-router'
 import { getDb } from '#/db'
+
+config({ path: '.env.local', override: true })
 
 export const Route = createFileRoute('/api/trpc/$')({
   server: {
@@ -15,7 +18,7 @@ export const Route = createFileRoute('/api/trpc/$')({
             db: await getDb(),
             headers: request.headers,
           }),
-          onError: ({ error }) => {
+          onError: ({ error }: { error: Error }) => {
             console.error(error)
           },
         })
@@ -29,7 +32,7 @@ export const Route = createFileRoute('/api/trpc/$')({
             db: await getDb(),
             headers: request.headers,
           }),
-          onError: ({ error }) => {
+          onError: ({ error }: { error: Error }) => {
             console.error(error)
           },
         })
@@ -43,7 +46,7 @@ export const Route = createFileRoute('/api/trpc/$')({
             db: await getDb(),
             headers: request.headers,
           }),
-          onError: ({ error }) => {
+          onError: ({ error }: { error: Error }) => {
             console.error(error)
           },
         })
@@ -57,7 +60,7 @@ export const Route = createFileRoute('/api/trpc/$')({
             db: await getDb(),
             headers: request.headers,
           }),
-          onError: ({ error }) => {
+          onError: ({ error }: { error: Error }) => {
             console.error(error)
           },
         })
@@ -71,7 +74,7 @@ export const Route = createFileRoute('/api/trpc/$')({
             db: await getDb(),
             headers: request.headers,
           }),
-          onError: ({ error }) => {
+          onError: ({ error }: { error: Error }) => {
             console.error(error)
           },
         })

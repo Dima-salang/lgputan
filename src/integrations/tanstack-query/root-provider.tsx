@@ -15,11 +15,21 @@ function getUrl() {
   return `${base}/api/trpc`
 }
 
+function getCookieHeader(): string | undefined {
+  if (typeof document === 'undefined') return undefined
+  const cookies = document.cookie.split('; ').find(c => c.startsWith('admin_token='))
+  return cookies || undefined
+}
+
 export const trpcClient = createTRPCClient<TRPCRouter>({
   links: [
     httpBatchStreamLink({
       transformer: superjson,
       url: getUrl(),
+      headers() {
+        const cookie = getCookieHeader()
+        return cookie ? { cookie } : {}
+      },
     }),
   ],
 })

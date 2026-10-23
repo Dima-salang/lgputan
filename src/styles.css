@@ -171,8 +171,17 @@ body {
   background:
     radial-gradient(1100px 620px at -8% -10%, var(--hero-a), transparent 58%),
     radial-gradient(1050px 620px at 112% -12%, var(--hero-b), transparent 62%),
-    radial-gradient(720px 380px at 50% 115%, rgba(79, 184, 178, 0.1), transparent 68%),
-    linear-gradient(180deg, color-mix(in oklab, var(--sand) 68%, white) 0%, var(--foam) 44%, var(--bg-base) 100%);
+    radial-gradient(
+      720px 380px at 50% 115%,
+      rgba(79, 184, 178, 0.1),
+      transparent 68%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--sand) 68%, white) 0%,
+      var(--foam) 44%,
+      var(--bg-base) 100%
+    );
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -186,8 +195,16 @@ body::before {
   z-index: -1;
   opacity: 0.28;
   background:
-    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.8), transparent 34%),
-    radial-gradient(circle at 78% 26%, rgba(79, 184, 178, 0.2), transparent 42%),
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(255, 255, 255, 0.8),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 78% 26%,
+      rgba(79, 184, 178, 0.2),
+      transparent 42%
+    ),
     radial-gradient(circle at 42% 82%, rgba(47, 106, 74, 0.14), transparent 36%);
 }
 
@@ -260,7 +277,11 @@ pre code {
 }
 
 .feature-card {
-  background: linear-gradient(165deg, color-mix(in oklab, var(--surface-strong) 93%, white 7%), var(--surface));
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--surface-strong) 93%, white 7%),
+    var(--surface)
+  );
   box-shadow:
     0 1px 0 var(--inset-glint) inset,
     0 18px 34px rgba(30, 90, 72, 0.1),
@@ -275,7 +296,10 @@ pre code {
 button,
 .island-shell,
 a {
-  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease,
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
     transform 180ms ease;
 }
 
@@ -287,10 +311,40 @@ a {
   color: var(--kicker);
 }
 
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: linear-gradient(135deg, var(--chip-bg), var(--surface));
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  color: var(--sea-ink);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 180ms ease;
+}
+
+.nav-logo:hover {
+  border-color: var(--lagoon-deep);
+  box-shadow: 0 2px 12px rgba(79, 184, 178, 0.2);
+}
+
 .nav-link {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
   text-decoration: none;
   color: var(--sea-ink-soft);
+  border-radius: 0.375rem;
+  transition: all 150ms ease;
+}
+
+.nav-link:hover {
+  color: var(--sea-ink);
+  background: var(--link-bg-hover);
 }
 
 .nav-link::after {
@@ -341,7 +395,97 @@ a {
     @apply border-border outline-ring/50;
   }
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    margin: 0;
+    color: var(--sea-ink);
+    font-family: var(--font-sans);
+    background-color: var(--bg-base);
+    background:
+      radial-gradient(1100px 620px at -8% -10%, var(--hero-a), transparent 58%),
+      radial-gradient(
+        1050px 620px at 112% -12%,
+        var(--hero-b),
+        transparent 62%
+      ),
+      radial-gradient(
+        720px 380px at 50% 115%,
+        rgba(79, 184, 178, 0.1),
+        transparent 68%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--sand) 68%, white) 0%,
+        var(--foam) 44%,
+        var(--bg-base) 100%
+      );
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.28;
+    background:
+      radial-gradient(
+        circle at 20% 15%,
+        rgba(255, 255, 255, 0.8),
+        transparent 34%
+      ),
+      radial-gradient(
+        circle at 78% 26%,
+        rgba(79, 184, 178, 0.2),
+        transparent 42%
+      ),
+      radial-gradient(
+        circle at 42% 82%,
+        rgba(47, 106, 74, 0.14),
+        transparent 36%
+      );
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.14;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 50% 30%, black, transparent 78%);
+  }
+
+  .terminal-crt::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  }
+
+  .terminal-crt::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
   }
 }

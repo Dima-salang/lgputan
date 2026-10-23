@@ -1,6 +1,6 @@
-import { publicProcedure, protectedProcedure } from '#/integrations/trpc/init'
+import { publicProcedure, protectedProcedure } from '#/integrations/trpc/init-server'
+import { verifyAdminPassword, createToken, loginSchema } from '#/server/auth'
 import { TRPCError } from '@trpc/server'
-import { verifyAdminPassword, createToken, loginSchema } from './auth'
 
 const rateLimitStore = new Map<
   string,
@@ -62,7 +62,7 @@ export const authRouter = {
 
     resetRateLimit(ip)
     await delay(RESPONSE_DELAY_MS)
-    const token = createToken()
+    const token = await createToken()
     return { token }
   }),
 
@@ -70,3 +70,5 @@ export const authRouter = {
     return { valid: true }
   }),
 }
+
+export type AuthRouter = typeof authRouter

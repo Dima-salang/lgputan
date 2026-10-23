@@ -154,13 +154,15 @@ export function AdminProjects() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="url" className="font-mono text-zinc-400 text-xs uppercase">Project URL</Label>
+                <Label htmlFor="url" className="font-mono text-zinc-400 text-xs uppercase">Project URLs (comma-separated)</Label>
                 <Input
                   id="url"
                   value={formData.url}
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  placeholder="https://github.com, https://demo.com"
                   className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100"
                 />
+                <p className="text-xs font-mono text-zinc-600">Separate multiple URLs with commas</p>
               </div>
               <DialogFooter>
                 <Button 
@@ -206,15 +208,20 @@ export function AdminProjects() {
                   </TableCell>
                   <TableCell>
                     {project.url ? (
-                      <a 
-                        href={project.url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex items-center gap-1 text-sm font-mono text-zinc-400 hover:text-zinc-100"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        VISIT
-                      </a>
+                      <div className="flex flex-wrap gap-2">
+                        {project.url.split(',').map((url, idx) => (
+                          <a 
+                            key={idx}
+                            href={url.trim()} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="flex items-center gap-1 text-sm font-mono text-zinc-400 hover:text-zinc-100"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            URL {idx + 1}
+                          </a>
+                        ))}
+                      </div>
                     ) : (
                       <span className="font-mono text-xs text-zinc-600">null</span>
                     )}
