@@ -6,6 +6,8 @@
 export const site = {
   name: 'Luis Gabrielle Putan',
   firstName: 'Luis',
+  displayFirst: 'Luis Gabrielle',
+  displayLast: 'Putan',
   wordmark: 'lgputan',
   role: 'Computer Science student and full-stack developer',
   shortRole: 'Computer Science student & full-stack developer',

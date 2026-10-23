@@ -1,330 +1,330 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Link } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { ArrowRight, ArrowUpRight, Github, Mail } from 'lucide-react'
 import { trpc } from '#/integrations/trpc/react'
-import {
-  Code2,
-  FolderOpen,
-  ChevronRight,
-  User,
-  MapPin,
-  Briefcase,
-  Github,
-  Linkedin,
-  Globe,
-} from 'lucide-react'
-import type { Skill } from '#/models/skill'
-import type { Project } from '#/models/project'
-import type { QuickLink } from '#/models/quick-link'
-import { useEffect, useRef, useState } from 'react'
+import { now, site } from '#/content/site'
+import { isDraft } from '#/lib/data'
+import { ArchiveRow } from '#/components/site/ArchiveRow'
+import { LocalTime } from '#/components/site/LocalTime'
+import { Marquee } from '#/components/site/Marquee'
+import { ProjectRow } from '#/components/site/ProjectRow'
+import { SectionHead } from '#/components/site/SectionHead'
+import { StackGroups } from '#/components/site/StackGroups'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({ component: Home })
 
-function MatrixRain() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  useEffect(() => {
-    const canvas = canvasRef.current!
-    const ctx = canvas.getContext('2d')!
-    let animId: number
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    resize()
-    window.addEventListener('resize', resize)
-    const chars =
-      '01アイウエオカキクケコサシスセソタチツテトナニヌネノ{}[]<>/\\|'
-    const fontSize = 13
-    let cols = Math.floor(canvas.width / fontSize)
-    const drops: number[] = Array(cols).fill(1)
-    const draw = () => {
-      ctx.fillStyle = 'rgba(0,0,0,0.05)'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-      ctx.font = `${fontSize}px "Courier New", monospace`
-      cols = Math.floor(canvas.width / fontSize)
-      while (drops.length < cols) drops.push(Math.random() * -100)
-      for (let i = 0; i < drops.length; i++) {
-        const char = chars[Math.floor(Math.random() * chars.length)]
-        const alpha = Math.random() > 0.97 ? 1 : 0.15
-        ctx.fillStyle = `rgba(0,255,102,${alpha})`
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize)
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
-          drops[i] = 0
-        drops[i]++
-      }
-      animId = requestAnimationFrame(draw)
-    }
-    draw()
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
+function NowPanel() {
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.07 }}
-    />
-  )
-}
-
-function Cursor() {
-  const [visible, setVisible] = useState(true)
-  useEffect(() => {
-    const t = setInterval(() => setVisible((v) => !v), 530)
-    return () => clearInterval(t)
-  }, [])
-  return (
-    <span
-      className="inline-block w-[8px] h-[1.1em] bg-[#00ff66] align-middle ml-0.5"
-      style={{ opacity: visible ? 1 : 0 }}
-    />
-  )
-}
-
-function TerminalWindow({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="rounded-xl overflow-hidden border border-[#00ff6622] bg-[#0a0e14]/90 backdrop-blur-xl shadow-2xl">
-      <div className="flex items-center gap-3 px-5 py-3 bg-[#0d1117] border-b border-[#00ff6622]">
-        <button className="size-3.5 rounded-full bg-[#ff5f56]" />
-        <button className="size-3.5 rounded-full bg-[#ffbd2e]" />
-        <button className="size-3.5 rounded-full bg-[#27c93f]" />
-        <span className="ml-4 font-mono text-sm text-[#4a5568] flex-1 text-center -ml-14">
-          {title}
+    <div className="panel relative overflow-hidden">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div className="flex items-center gap-1.5" aria-hidden="true">
+          <span className="size-2 rounded-full bg-signal/70" />
+          <span className="size-2 rounded-full bg-acid/60" />
+          <span className="size-2 rounded-full bg-soft/60" />
+        </div>
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+          Now
         </span>
       </div>
-      <div className="p-6 space-y-5">{children}</div>
-    </div>
-  )
-}
 
-function StaticLine({ cmd }: { cmd: string }) {
-  return (
-    <div className="font-mono text-base">
-      <span className="text-[#00ff66] select-none">
-        <span className="text-[#00b4d8]">lgab</span>
-        <span className="text-[#888]">@</span>
-        <span className="text-[#9d4edd]">portfolio</span>
-        <span className="text-[#888]">:~$</span>
-      </span>
-      <span className="text-[#e2e8f0] ml-2">{cmd}</span>
-    </div>
-  )
-}
-
-function ProfileSection() {
-  return (
-    <div className="space-y-4 mt-2">
-      <div className="flex items-center gap-3 text-base">
-        <User className="size-5 text-[#00b4d8]" />
-        <span className="text-[#00b4d8]">NAME</span>
-        <span className="text-[#4a5568]">:</span>
-        <span className="text-[#e2e8f0]">Luis Gabrielle Putan</span>
-      </div>
-      <div className="flex items-center gap-3 text-base">
-        <Briefcase className="size-5 text-[#9d4edd]" />
-        <span className="text-[#9d4edd]">ROLE</span>
-        <span className="text-[#4a5568]">:</span>
-        <span className="text-[#e2e8f0]">Computer Science Student</span>
-      </div>
-      <div className="flex items-center gap-3 text-base">
-        <MapPin className="size-5 text-[#00ff66]" />
-        <span className="text-[#00ff66]">LOCATION</span>
-        <span className="text-[#4a5568]">:</span>
-        <span className="text-[#e2e8f0]">Philippines</span>
-      </div>
-    </div>
-  )
-}
-
-function ProjectsSection({ projects }: { projects?: Project[] }) {
-  return (
-    <div className="mt-1">
-      <div className="flex flex-wrap gap-2">
-        {projects?.slice(0, 8).map((project) => (
-          <a
-            key={project.id}
-            href={project.url?.split(',')[0]?.trim()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-2 px-4 py-2 rounded-lg border border-[#00ff6614] bg-[#0d1117]/60 hover:border-[#00ff6640] hover:bg-[#0d1117]/90 transition-all font-mono text-sm"
+      <dl>
+        {now.map((item) => (
+          <div
+            key={item.label}
+            className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-3.5"
           >
-            <FolderOpen className="size-4 text-[#00ff66] shrink-0" />
-            <span className="text-[#e2e8f0] group-hover:text-[#00ff99]">
-              {project.name}
-            </span>
-          </a>
+            <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+              {item.label}
+            </dt>
+            <dd className="text-right font-mono text-xs text-foreground">
+              {item.value}
+            </dd>
+          </div>
         ))}
-        {(!projects || projects.length === 0) && (
-          <span className="font-mono text-sm text-[#2d3748]">
-            no projects found
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
 
-function SkillsSection({ skills }: { skills?: Skill[] }) {
-  return (
-    <div className="mt-1">
-      <div className="flex flex-wrap gap-2">
-        {skills?.map((skill) => (
-          <span
-            key={skill.id}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#00ff6622] bg-[#00ff6608] font-mono text-sm text-[#00ff99]"
-          >
-            <Code2 className="size-4" />
-            {skill.name}
-          </span>
-        ))}
-        {(!skills || skills.length === 0) && (
-          <span className="font-mono text-sm text-[#2d3748]">
-            no skills installed
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
+        <div className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-3.5">
+          <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+            Local time
+          </dt>
+          <dd className="font-mono text-xs text-foreground">
+            <LocalTime />
+          </dd>
+        </div>
 
-function SocialsSection({ links }: { links?: QuickLink[] }) {
-  const getIcon = (icon: string) => {
-    switch (icon) {
-      case 'github':
-        return <Github className="size-5" />
-      case 'linkedin':
-        return <Linkedin className="size-5" />
-      default:
-        return <Globe className="size-5" />
-    }
-  }
-  return (
-    <div className="mt-1">
-      <div className="flex flex-wrap gap-3">
-        {links
-          ?.filter((l) => l.url)
-          .map((link) => (
+        <div className="flex items-baseline justify-between gap-4 px-4 py-3.5">
+          <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+            GitHub
+          </dt>
+          <dd>
             <a
-              key={link.id}
-              href={link.url || '#'}
+              href={site.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#00b4d822] bg-[#00b4d808] hover:border-[#00b4d844] transition-all font-mono text-base text-[#00b4d8]"
+              className="inline-flex items-center gap-1.5 font-mono text-xs text-foreground transition-colors hover:text-acid"
             >
-              {getIcon(link.icon || 'external')}
-              {link.name}
+              {site.githubHandle}
+              <ArrowUpRight className="size-3" aria-hidden="true" />
             </a>
-          ))}
-        {(!links || links.length === 0) && (
-          <span className="font-mono text-sm text-[#2d3748]">
-            no links configured
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function NavLinks() {
-  const links = [
-    { cmd: 'about', href: '/about', desc: 'Learn more about me' },
-    { cmd: 'projects', href: '/projects', desc: 'View my work' },
-    { cmd: 'skills', href: '/skills', desc: 'Tech stack' },
-    { cmd: 'blog', href: '/blog', desc: 'Read posts' },
-  ]
-  return (
-    <div className="mt-2 space-y-2">
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          to={link.href}
-          className="group flex items-center gap-4 rounded-lg px-4 py-3 hover:bg-[#00ff660a] border border-transparent hover:border-[#00ff6620] transition-all"
-        >
-          <span className="text-[#00ff66] font-mono">$</span>
-          <span className="font-mono text-base">
-            <span className="text-[#00b4d8]">cd</span>
-            <span className="text-[#e2e8f0] ml-2">./{link.cmd}</span>
-            <span className="text-[#4a5568] ml-3"># {link.desc}</span>
-          </span>
-          <ChevronRight className="size-4 text-[#2d3748] ml-auto group-hover:text-[#00ff66] group-hover:translate-x-1 transition-all" />
-        </Link>
-      ))}
-    </div>
-  )
-}
-
-function App() {
-  const { data: skills } = trpc.skills.getSkills.useQuery()
-  const { data: projects } = trpc.projects.getProjects.useQuery()
-  const { data: quickLinks } = trpc.quickLinks.getQuickLinks.useQuery()
-
-  useEffect(() => {
-    const now = Date.now()
-    localStorage.setItem('last_home_visit', now.toString())
-  }, [])
-
-  return (
-    <div
-      className="relative min-h-screen bg-[#060810] text-[#e2e8f0]"
-      style={{
-        fontFamily: '"JetBrains Mono", "Fira Code", "Courier New", monospace',
-      }}
-    >
-      <MatrixRain />
-      <div
-        className="fixed inset-0 pointer-events-none z-[1]"
-        style={{
-          background:
-            'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)',
-        }}
-      />
-      <div
-        className="fixed inset-0 pointer-events-none z-[1]"
-        style={{
-          background:
-            'radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,180,216,0.04) 0%, transparent 70%)',
-        }}
-      />
-
-      <div className="relative z-10">
-        <div className="max-w-5xl mx-auto px-6 py-10 sm:py-16">
-          <TerminalWindow title="~/portfolio — zsh">
-            <StaticLine cmd="whoami" />
-            <ProfileSection />
-
-            <StaticLine cmd="ls -la ~/projects" />
-            <ProjectsSection projects={projects} />
-
-            <StaticLine cmd="cat /proc/skills" />
-            <SkillsSection skills={skills} />
-
-            <StaticLine cmd="cat ~/.config/socials" />
-            <SocialsSection links={quickLinks || []} />
-
-            <StaticLine cmd="ls -la ~/routes/" />
-            <NavLinks />
-
-            <div className="flex items-center gap-2 font-mono text-base mt-3">
-              <span className="text-[#00b4d8]">lgab</span>
-              <span className="text-[#888]">@</span>
-              <span className="text-[#9d4edd]">portfolio</span>
-              <span className="text-[#888]">:~$</span>
-              <Cursor />
-            </div>
-          </TerminalWindow>
+          </dd>
         </div>
-      </div>
+      </dl>
 
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
-      `}</style>
+      <div className="flex items-center justify-between border-t border-border px-4 py-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+          {site.location}
+        </span>
+        <span className="animate-blink font-mono text-xs text-acid" aria-hidden="true">
+          _
+        </span>
+      </div>
     </div>
+  )
+}
+
+function Home() {
+  const projectsQuery = trpc.projects.getProjects.useQuery()
+  const skillsQuery = trpc.skills.getSkills.useQuery()
+  const postsQuery = trpc.blog.getPosts.useQuery()
+
+  const projects = projectsQuery.data ?? []
+  const skills = skillsQuery.data ?? []
+  const publishedPosts = (postsQuery.data ?? []).filter(
+    (post) => !isDraft(post.content),
+  )
+
+  return (
+    <main id="main">
+      <section className="relative overflow-hidden border-b border-border">
+        <div
+          className="dot-grid pointer-events-none absolute inset-0 opacity-50"
+          aria-hidden="true"
+        />
+        <div className="page-shell relative grid gap-12 pb-16 pt-14 lg:grid-cols-12 lg:gap-10 lg:pb-24 lg:pt-20">
+          <div className="lg:col-span-7">
+            <div
+              className="reveal flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+            >
+              <span className="inline-flex items-center gap-2">
+                <span className="size-1.5 rounded-full bg-acid" aria-hidden="true" />
+                {site.availability}
+              </span>
+              <span className="text-border" aria-hidden="true">
+                /
+              </span>
+              <span>{site.location}</span>
+            </div>
+
+            <h1
+              className="reveal mt-7 font-display text-[clamp(3.4rem,9vw,7rem)] leading-[0.86] tracking-[-0.035em]"
+              style={{ animationDelay: '80ms' }}
+            >
+              {site.displayFirst}
+              <br />
+              <span className="italic">{site.displayLast}</span>
+              <span className="text-acid">.</span>
+            </h1>
+
+            <p
+              className="reveal mt-8 max-w-xl text-lg leading-relaxed text-foreground/90"
+              style={{ animationDelay: '160ms' }}
+            >
+              {site.shortRole}. {site.intro}
+            </p>
+
+            <p
+              className="reveal mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground"
+              style={{ animationDelay: '220ms' }}
+            >
+              Currently building Excelsior Academy and finishing a Computer
+              Science degree.
+            </p>
+
+            <div
+              className="reveal mt-9 flex flex-wrap items-center gap-6"
+              style={{ animationDelay: '280ms' }}
+            >
+              <Link
+                to="/projects"
+                className="group inline-flex items-center gap-3 bg-primary px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                See my work
+                <ArrowRight
+                  className="size-4 transition-transform group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
+              </Link>
+              <a
+                href={`mailto:${site.email}`}
+                className="link-underline text-[11px] uppercase tracking-[0.14em]"
+              >
+                <Mail className="size-3.5" aria-hidden="true" />
+                Email me
+              </a>
+            </div>
+          </div>
+
+          <div className="reveal lg:col-span-5" style={{ animationDelay: '180ms' }}>
+            <NowPanel />
+          </div>
+        </div>
+      </section>
+
+      <Marquee items={skills.map((skill) => skill.name)} />
+
+      <div className="page-shell">
+        <section className="py-16 sm:py-20">
+          <SectionHead
+            index="01"
+            title="Selected work"
+            action={
+              <Link
+                to="/projects"
+                className="link-underline text-[10px] uppercase tracking-[0.12em]"
+              >
+                All projects
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </Link>
+            }
+          />
+
+          <div className="border-b border-border">
+            {projectsQuery.isLoading ? (
+              <div className="space-y-3 border-t border-border py-8">
+                <div className="h-8 w-56 animate-pulse bg-secondary" />
+                <div className="h-4 w-full max-w-md animate-pulse bg-secondary" />
+              </div>
+            ) : projects.length > 0 ? (
+              projects.map((project, index) => (
+                <ProjectRow
+                  key={project.id}
+                  project={project}
+                  index={index + 1}
+                />
+              ))
+            ) : (
+              <div className="border-t border-border py-14 text-center">
+                <p className="font-mono text-xs text-muted-foreground">
+                  No projects yet. New work will appear here.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="border-t border-border py-16 sm:py-20">
+          <SectionHead
+            index="02"
+            title="Tools I work with"
+            action={
+              <Link
+                to="/skills"
+                className="link-underline text-[10px] uppercase tracking-[0.12em]"
+              >
+                All skills
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </Link>
+            }
+          />
+
+          {skillsQuery.isLoading ? (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2].map((item) => (
+                <div key={item} className="space-y-3">
+                  <div className="h-3 w-20 animate-pulse bg-secondary" />
+                  <div className="h-9 w-full animate-pulse bg-secondary" />
+                  <div className="h-9 w-full animate-pulse bg-secondary" />
+                </div>
+              ))}
+            </div>
+          ) : skills.length > 0 ? (
+            <StackGroups skills={skills} />
+          ) : (
+            <p className="py-10 text-center font-mono text-xs text-muted-foreground">
+              No skills added yet.
+            </p>
+          )}
+        </section>
+
+        <section className="border-t border-border py-16 sm:py-20">
+          <SectionHead
+            index="03"
+            title="Writing"
+            action={
+              <Link
+                to="/blog"
+                className="link-underline text-[10px] uppercase tracking-[0.12em]"
+              >
+                All writing
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </Link>
+            }
+          />
+
+          <div className="border-b border-border">
+            {postsQuery.isLoading ? (
+              <div className="space-y-3 border-t border-border py-6">
+                <div className="h-3 w-24 animate-pulse bg-secondary" />
+                <div className="h-7 w-72 animate-pulse bg-secondary" />
+              </div>
+            ) : publishedPosts.length > 0 ? (
+              publishedPosts
+                .slice(0, 3)
+                .map((post) => <ArchiveRow key={post.id} post={post} />)
+            ) : (
+              <div className="border-t border-border py-12 text-center">
+                <p className="font-mono text-xs text-muted-foreground">
+                  No published posts yet. The first one is in progress.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="border-t border-border py-16 sm:py-24">
+          <p className="section-label">
+            <span className="index">04</span>
+            <span className="text-muted-foreground/50" aria-hidden="true">
+              /
+            </span>
+            <span>Contact</span>
+          </p>
+
+          <div className="mt-8 grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-8">
+              <h2 className="font-display text-[clamp(2.8rem,7vw,5.5rem)] leading-[0.92] tracking-[-0.03em]">
+                Let&apos;s build
+                <br />
+                <span className="italic">something.</span>
+              </h2>
+            </div>
+
+            <div className="space-y-6 self-end lg:col-span-4">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                I&apos;m open to internships and happy to talk about projects,
+                school, or anything you&apos;re building.
+              </p>
+
+              <a
+                href={`mailto:${site.email}`}
+                className="link-underline break-all text-sm sm:text-base"
+              >
+                <Mail className="size-4" aria-hidden="true" />
+                {site.email}
+              </a>
+
+              <a
+                href={site.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-fit items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-acid"
+              >
+                <Github className="size-4" aria-hidden="true" />
+                {site.githubHandle}
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   )
 }
