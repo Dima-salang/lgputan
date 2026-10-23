@@ -138,6 +138,8 @@ export function CommandPalette({
   }
 
   function onInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (filtered.length === 0) return
+
     if (event.key === 'ArrowDown') {
       event.preventDefault()
       setActive((current) => Math.min(current + 1, filtered.length - 1))
