@@ -1,0 +1,75 @@
+---
+import { Mail } from 'lucide-react'
+import BaseLayout from '#/layouts/BaseLayout.astro'
+import ArchiveRow from '#/components/site/ArchiveRow.astro'
+import { site } from '#/data/site'
+import { getPublishedPosts } from '#/lib/content'
+import { groupByYear } from '#/lib/data'
+
+const posts = await getPublishedPosts()
+const groups = groupByYear(posts)
+---
+
+<BaseLayout
+  title={`Writing — ${site.name}`}
+  description="Notes on what I'm learning, building, and getting wrong."
+>
+  <main id="main" class="page-shell py-14 sm:py-20">
+    <div class="border-b border-border pb-10">
+      <p class="section-label">
+        <span class="index">03</span>
+        <span class="text-muted-foreground/50" aria-hidden="true">
+          /
+        </span>
+        <span>Writing</span>
+      </p>
+      <h1 class="mt-6 font-display text-[clamp(3.5rem,9vw,7rem)] leading-[0.88] tracking-[-0.035em]">
+        Writing<span class="text-acid">.</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        Notes on what I'm learning, building, and getting wrong. Long enough to
+        be useful, short enough to finish.
+      </p>
+    </div>
+
+    {posts.length > 0 ? (
+      <div class="mt-10 space-y-10">
+        {groups.map((group) => (
+          <section>
+            <h2 class="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              {group.year}
+            </h2>
+            <div class="border-b border-border">
+              {group.items.map((post) => (
+                <ArchiveRow post={post} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    ) : (
+      <div class="mt-10 border border-border px-6 py-20 text-center">
+        <p class="font-display text-4xl">Nothing published yet.</p>
+        <p class="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+          I'm working on the first post. In the meantime, you can email me or
+          look through the projects.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-5">
+          <a
+            href={`mailto:${site.email}`}
+            class="link-underline text-[10px] uppercase tracking-[0.12em]"
+          >
+            <Mail className="size-3.5" aria-hidden="true" />
+            Email me
+          </a>
+          <a
+            href="/projects"
+            class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-acid"
+          >
+            See the work
+          </a>
+        </div>
+      </div>
+    )}
+  </main>
+</BaseLayout>

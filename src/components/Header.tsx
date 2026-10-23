@@ -1,24 +1,40 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useRouterState } from '@tanstack/react-router'
 import { ArrowUpRight, Menu, Search, X } from 'lucide-react'
+import { pages, site } from '#/data/site'
+import type { PalettePost, PaletteProject } from '#/lib/search'
 import ThemeToggle from './ThemeToggle'
 import { CommandPalette } from './CommandPalette'
-import { pages, site } from '#/content/site'
 
 function openPalette() {
   window.dispatchEvent(new Event('open-command-palette'))
 }
 
-export default function Header() {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  })
+function normalizePath(pathname: string) {
+  if (pathname === '/') return '/'
+  return pathname.replace(/\/+$/, '')
+}
+
+function isCurrentPath(pathname: string, target: string) {
+  const current = normalizePath(pathname)
+
+  if (target === '/blog') {
+    return current === '/blog' || current.startsWith('/blog/')
+  }
+
+  return current === target
+}
+
+export default function Header({
+  pathname,
+  posts,
+  projects,
+}: {
+  pathname: string
+  posts: PalettePost[]
+  projects: PaletteProject[]
+}) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [pathname])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -62,8 +78,8 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="page-shell flex h-16 items-center gap-8">
-          <Link
-            to="/"
+          <a
+            href="/"
             className="group inline-flex shrink-0 items-baseline gap-0.5 font-mono text-sm tracking-tight"
             aria-label={`${site.wordmark} — home`}
           >
@@ -73,22 +89,25 @@ export default function Header() {
             <span className="text-acid" aria-hidden="true">
               .
             </span>
-          </Link>
+          </a>
 
           <nav
             className="hidden items-center gap-7 md:flex"
             aria-label="Main navigation"
           >
-            {pages.map((page) => (
-              <Link
-                key={page.to}
-                to={page.to}
-                className="nav-link"
-                activeProps={{ className: 'nav-link is-active' }}
-              >
-                {page.label}
-              </Link>
-            ))}
+            {pages.map((page) => {
+              const active = isCurrentPath(pathname, page.to)
+              return (
+                <a
+                  key={page.to}
+                  href={page.to}
+                  className={active ? 'nav-link is-active' : 'nav-link'}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {page.label}
+                </a>
+              )
+            })}
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
@@ -159,20 +178,25 @@ export default function Header() {
             className="page-shell flex-1 py-4"
             aria-label="Mobile navigation"
           >
-            {pages.map((page, index) => (
-              <Link
-                key={page.to}
-                to={page.to}
-                className="group flex items-baseline justify-between gap-4 border-b border-border py-5"
-              >
-                <span className="font-display text-4xl leading-none transition-colors group-hover:text-acid">
-                  {page.label}
-                </span>
-                <span className="font-mono text-[11px] text-muted-foreground">
-                  0{index + 1}
-                </span>
-              </Link>
-            ))}
+            {pages.map((page, index) => {
+              const active = isCurrentPath(pathname, page.to)
+              return (
+                <a
+                  key={page.to}
+                  href={page.to}
+                  onClick={() => setMenuOpen(false)}
+                  className="group flex items-baseline justify-between gap-4 border-b border-border py-5"
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <span className="font-display text-4xl leading-none transition-colors group-hover:text-acid">
+                    {page.label}
+                  </span>
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    0{index + 1}
+                  </span>
+                </a>
+              )
+            })}
           </nav>
 
           <div className="page-shell shrink-0 space-y-3 border-t border-border py-6">
@@ -202,7 +226,7 @@ export default function Header() {
         </div>
       ) : null}
 
-      <CommandPalette />
+      <CommandPalette posts={posts} projects={projects} />
     </>
   )
 }

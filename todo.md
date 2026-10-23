@@ -1,8 +1,10 @@
 portfolio
+
 - home
 - about
 - blog
 - projects
 
 deployment:
-- make .env.production
+
+- deploy the static Astro build to Vercel

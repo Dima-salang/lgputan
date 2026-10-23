@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "astro",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+---
+import { skillGroups } from '#/data/skills'
+import type { SkillGroup } from '#/data/skills'
+import { SkillIcon } from './SkillIcon'
+
+interface Props {
+  columns?: 2 | 3
+  groups?: SkillGroup[]
+}
+
+const { columns = 3, groups = skillGroups } = Astro.props
+const gridClass =
+  columns === 2
+    ? 'grid gap-x-10 gap-y-8 sm:grid-cols-2'
+    : 'grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3'
+---
+
+<div class={gridClass}>
+  {groups.map((group) => (
+    <section>
+      <div class="mb-3 flex items-baseline justify-between gap-3">
+        <h3 class="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+          {group.name}
+        </h3>
+        <span class="font-mono text-[10px] text-muted-foreground/60">
+          {String(group.items.length).padStart(2, '0')}
+        </span>
+      </div>
+      <ul class="border-t border-border">
+        {group.items.map((skill) => (
+          <li class="flex items-center gap-2.5 border-b border-border py-2.5 font-mono text-[13px] text-foreground">
+            <SkillIcon
+              name={skill.icon}
+              className="size-3.5 shrink-0 text-acid"
+            />
+            {skill.name}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</div>

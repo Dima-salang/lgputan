@@ -1,0 +1,40 @@
+---
+import BaseLayout from '#/layouts/BaseLayout.astro'
+import { ProjectExplorer } from '#/components/ProjectExplorer'
+import { projects } from '#/data/projects'
+import { site } from '#/data/site'
+
+const total = projects.length
+---
+
+<BaseLayout
+  title={`Work — ${site.name}`}
+  description="A few things I have built: study tools, a manga reader, a timer, and a time logger."
+>
+  <main id="main" class="page-shell py-14 sm:py-20">
+    <div class="flex flex-col gap-8 border-b border-border pb-10 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="section-label">
+          <span class="index">01</span>
+          <span class="text-muted-foreground/50" aria-hidden="true">
+            /
+          </span>
+          <span>Work</span>
+        </p>
+        <h1 class="mt-6 font-display text-[clamp(3.5rem,9vw,7rem)] leading-[0.88] tracking-[-0.035em]">
+          Work<span class="text-acid">.</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          A few things I've built. Most of them started as a problem I had, then
+          grew into something I could share.
+        </p>
+      </div>
+
+      <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        {total} project{total === 1 ? '' : 's'}
+      </p>
+    </div>
+
+    <ProjectExplorer client:load projects={projects} />
+  </main>
+</BaseLayout>

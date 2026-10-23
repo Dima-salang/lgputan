@@ -1,20 +1,45 @@
-//  @ts-check
+// @ts-check
 
-import { tanstackConfig } from '@tanstack/eslint-config'
+import js from '@eslint/js'
+import prettier from 'eslint-config-prettier'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig } from 'eslint/config'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
 
-export default [
-  ...tanstackConfig,
+export default defineConfig(
   {
-    rules: {
-      'import/no-cycle': 'off',
-      'import/order': 'off',
-      'sort-imports': 'off',
-      '@typescript-eslint/array-type': 'off',
-      '@typescript-eslint/require-await': 'off',
-      'pnpm/json-enforce-catalog': 'off',
+    ignores: ['dist', '.astro', 'node_modules', '**/*.astro'],
+  },
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    plugins: {
+      'react-hooks': /** @type {any} */ (reactHooks),
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
   },
-]
+  prettier,
+)

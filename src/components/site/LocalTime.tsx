@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { site } from '#/content/site'
+import { site } from '#/data/site'
 
 export function LocalTime({ className }: { className?: string }) {
   const [time, setTime] = useState('--:--')

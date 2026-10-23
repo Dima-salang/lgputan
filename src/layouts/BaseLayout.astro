@@ -1,0 +1,81 @@
+---
+import Header from '#/components/Header'
+import Footer from '#/components/Footer.astro'
+import { primaryProjectLink, projects } from '#/data/projects'
+import { site } from '#/data/site'
+import { getPublishedPosts } from '#/lib/content'
+import '#/styles.css'
+
+interface Props {
+  title?: string
+  description?: string
+  type?: 'website' | 'article'
+  publishedTime?: string
+}
+
+const {
+  title = site.seo.title,
+  description = site.seo.description,
+  type = 'website',
+  publishedTime,
+} = Astro.props
+
+const posts = await getPublishedPosts()
+const palettePosts = posts.map((post) => ({
+  slug: post.slug,
+  title: post.title,
+  description: post.description,
+}))
+const paletteProjects = projects.map((project) => ({
+  name: project.name,
+  description: project.description,
+  href: primaryProjectLink(project)?.href,
+}))
+
+const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var mode=(stored==='light'||stored==='dark'||stored==='auto')?stored:'dark';var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=mode==='auto'?(prefersDark?'dark':'light'):mode;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);if(mode==='auto'){root.removeAttribute('data-theme')}else{root.setAttribute('data-theme',mode)}root.style.colorScheme=resolved;}catch(e){}})();`
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#08090a" />
+    <meta name="author" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.name} />
+    {publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+    />
+    <script is:inline set:html={THEME_INIT_SCRIPT} />
+  </head>
+  <body class="min-h-screen bg-background font-sans text-foreground antialiased">
+    <a href="#main" class="skip-link">
+      Skip to content
+    </a>
+    <div class="site-grain" aria-hidden="true"></div>
+    <Header
+      client:load
+      pathname={Astro.url.pathname}
+      posts={palettePosts}
+      projects={paletteProjects}
+    />
+    <slot />
+    <Footer />
+  </body>
+</html>

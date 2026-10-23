@@ -1,6 +1,6 @@
-import { ArrowUpRight, ExternalLink, Github } from 'lucide-react'
-import { splitLinks } from '#/lib/data'
-import type { Project } from '#/models/project'
+import { ArrowUpRight, ExternalLink, GithubIcon } from 'lucide-react'
+import type { Project } from '#/data/projects'
+import { primaryProjectLink } from '#/data/projects'
 import { Dither } from './Dither'
 
 export function ProjectRow({
@@ -10,8 +10,7 @@ export function ProjectRow({
   project: Project
   index: number
 }) {
-  const links = splitLinks(project.url)
-  const primary = links.at(0)
+  const primary = primaryProjectLink(project)
 
   return (
     <article className="group -mx-4 grid grid-cols-[2.25rem_1fr] gap-x-4 border-t border-border px-4 py-8 transition-colors duration-300 hover:bg-card/50 sm:grid-cols-[3.5rem_1fr_auto] sm:gap-x-8 sm:py-9">
@@ -42,9 +41,9 @@ export function ProjectRow({
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {links.length > 0 ? (
-            links.map((link) => {
-              const Icon = link.kind === 'code' ? Github : ExternalLink
+          {project.links.length > 0 ? (
+            project.links.map((link) => {
+              const Icon = link.kind === 'code' ? GithubIcon : ExternalLink
               return (
                 <a
                   key={link.href}

@@ -1,0 +1,100 @@
+---
+import { getCollection, render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+import BaseLayout from '#/layouts/BaseLayout.astro'
+import { site } from '#/data/site'
+import { formatDate, readingTime } from '#/lib/data'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft)
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }))
+}
+
+interface Props {
+  post: CollectionEntry<'writing'>
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+---
+
+<BaseLayout
+  title={`${post.data.title} — ${site.name}`}
+  description={post.data.description}
+  type="article"
+  publishedTime={post.data.date.toISOString()}
+>
+  <main id="main" class="page-shell py-14 sm:py-20">
+    <a
+      href="/blog"
+      class="link-underline text-[10px] uppercase tracking-[0.12em]"
+    >
+      <ArrowLeft className="size-3.5" aria-hidden="true" />
+      Back to writing
+    </a>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-12">
+      <aside class="lg:col-span-2">
+        <dl class="flex flex-row gap-6 lg:sticky lg:top-24 lg:flex-col lg:gap-4">
+          <div>
+            <dt class="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+              Published
+            </dt>
+            <dd class="mt-1 font-mono text-[11px] text-foreground">
+              <time datetime={post.data.date.toISOString()}>
+                {formatDate(post.data.date)}
+              </time>
+            </dd>
+          </div>
+          <div>
+            <dt class="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+              Read time
+            </dt>
+            <dd class="mt-1 font-mono text-[11px] text-foreground">
+              {readingTime(post.body)}
+            </dd>
+          </div>
+          <div>
+            <dt class="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+              Author
+            </dt>
+            <dd class="mt-1 font-mono text-[11px] text-foreground">
+              {site.name}
+            </dd>
+          </div>
+        </dl>
+      </aside>
+
+      <article class="min-w-0 lg:col-span-10">
+        <h1 class="max-w-3xl font-display text-[clamp(2.6rem,6vw,4.5rem)] leading-[0.95] tracking-[-0.03em]">
+          {post.data.title}
+        </h1>
+
+        <div class="prose mt-10 border-t border-border pt-8">
+          <Content />
+        </div>
+
+        <footer class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
+          <a
+            href="/blog"
+            class="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-acid"
+          >
+            More writing
+          </a>
+          <a
+            href={`mailto:${site.email}`}
+            class="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-acid"
+          >
+            Reply by email
+            <ArrowUpRight className="size-3.5" aria-hidden="true" />
+          </a>
+        </footer>
+      </article>
+    </div>
+  </main>
+</BaseLayout>

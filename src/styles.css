@@ -530,24 +530,6 @@
   font-size: 0.9rem;
 }
 
-/* Rich text editor */
-.rich-editor .ProseMirror {
-  cursor: text;
-  color: var(--foreground);
-}
-
-.rich-editor .ProseMirror p.is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  color: var(--muted-foreground);
-  pointer-events: none;
-}
-
-.rich-editor .ProseMirror-selectednode {
-  outline: 1px solid var(--acid);
-}
-
 /* ------------------------------------------------------------------ *
  * Motion
  * ------------------------------------------------------------------ */

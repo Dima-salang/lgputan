@@ -1,27 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import {
   CornerDownLeft,
   FileText,
   FolderOpen,
-  Github,
+  GithubIcon,
   Layers,
   Mail,
   Search,
   User,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { pages, site } from '#/content/site'
-
-type PageTo = (typeof pages)[number]['to']
+import { pages, site } from '#/data/site'
+import type { PalettePost, PaletteProject } from '#/lib/search'
 
 type Action = {
   id: string
   label: string
   description: string
   icon: LucideIcon
-  to?: PageTo
-  href?: string
+  href: string
 }
 
 const pageIcons: Record<string, LucideIcon> = {
@@ -31,36 +28,58 @@ const pageIcons: Record<string, LucideIcon> = {
   '/about': User,
 }
 
-const actions: Action[] = [
-  ...pages.map((page) => ({
-    id: page.to,
-    label: page.label,
-    description: page.description,
-    icon: pageIcons[page.to] ?? FolderOpen,
-    to: page.to,
-  })),
-  {
-    id: 'github',
-    label: 'GitHub',
-    description: `Projects and code on ${site.githubHandle}`,
-    icon: Github,
-    href: site.github,
-  },
-  {
-    id: 'email',
-    label: 'Email',
-    description: site.email,
-    icon: Mail,
-    href: `mailto:${site.email}`,
-  },
-]
-
-export function CommandPalette() {
+export function CommandPalette({
+  posts,
+  projects,
+}: {
+  posts: PalettePost[]
+  projects: PaletteProject[]
+}) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
+
+  const actions = useMemo<Action[]>(
+    () => [
+      ...pages.map((page) => ({
+        id: page.to,
+        label: page.label,
+        description: page.description,
+        icon: pageIcons[page.to] ?? FolderOpen,
+        href: page.to,
+      })),
+      ...posts.map((post) => ({
+        id: `post-${post.slug}`,
+        label: post.title,
+        description: `Writing · ${post.description}`,
+        icon: FileText,
+        href: `/blog/${post.slug}`,
+      })),
+      ...projects.map((project) => ({
+        id: `project-${project.name}`,
+        label: project.name,
+        description: `Work · ${project.description}`,
+        icon: FolderOpen,
+        href: project.href ?? '/projects',
+      })),
+      {
+        id: 'github',
+        label: 'GitHub',
+        description: `Projects and code on ${site.githubHandle}`,
+        icon: GithubIcon,
+        href: site.github,
+      },
+      {
+        id: 'email',
+        label: 'Email',
+        description: site.email,
+        icon: Mail,
+        href: `mailto:${site.email}`,
+      },
+    ],
+    [posts, projects],
+  )
 
   const filtered = useMemo(() => {
     const value = query.trim().toLowerCase()
@@ -70,7 +89,7 @@ export function CommandPalette() {
         action.label.toLowerCase().includes(value) ||
         action.description.toLowerCase().includes(value),
     )
-  }, [query])
+  }, [actions, query])
 
   const open = useCallback(() => {
     if (dialogRef.current?.open) return
@@ -103,10 +122,6 @@ export function CommandPalette() {
   }, [open, close])
 
   useEffect(() => {
-    setActive(0)
-  }, [query])
-
-  useEffect(() => {
     const option = document.getElementById(`palette-option-${active}`)
     option?.scrollIntoView({ block: 'nearest' })
   }, [active])
@@ -114,18 +129,12 @@ export function CommandPalette() {
   function run(action: Action) {
     close()
 
-    if (action.to) {
-      navigate({ to: action.to })
+    if (action.href.startsWith('mailto:') || action.href.startsWith('/')) {
+      window.location.assign(action.href)
       return
     }
 
-    if (!action.href) return
-
-    if (action.href.startsWith('mailto:')) {
-      window.location.href = action.href
-    } else {
-      window.open(action.href, '_blank', 'noopener,noreferrer')
-    }
+    window.open(action.href, '_blank', 'noopener,noreferrer')
   }
 
   function onInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -165,9 +174,12 @@ export function CommandPalette() {
           <input
             ref={inputRef}
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setActive(0)
+            }}
             onKeyDown={onInputKeyDown}
-            placeholder="Search pages, GitHub, email…"
+            placeholder="Search pages, writing, work…"
             aria-label="Search"
             aria-controls="palette-results"
             aria-activedescendant={

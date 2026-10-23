@@ -1,0 +1,46 @@
+---
+import { ArrowLeft, Mail } from 'lucide-react'
+import BaseLayout from '#/layouts/BaseLayout.astro'
+import { site } from '#/data/site'
+---
+
+<BaseLayout
+  title={`Page not found — ${site.name}`}
+  description="That page does not exist."
+>
+  <main id="main" class="page-shell py-20 sm:py-28">
+    <p class="section-label">
+      <span class="index">404</span>
+      <span class="text-muted-foreground/50" aria-hidden="true">
+        /
+      </span>
+      <span>Not found</span>
+    </p>
+
+    <h1 class="mt-6 font-display text-[clamp(3.4rem,9vw,7rem)] leading-[0.88] tracking-[-0.035em]">
+      Nothing here<span class="text-acid">.</span>
+    </h1>
+
+    <p class="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
+      The page may have moved, or the link may be wrong. The work and writing
+      pages are still where you left them.
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center gap-6">
+      <a
+        href="/"
+        class="link-underline text-[10px] uppercase tracking-[0.12em]"
+      >
+        <ArrowLeft className="size-3.5" aria-hidden="true" />
+        Back home
+      </a>
+      <a
+        href={`mailto:${site.email}`}
+        class="link-underline text-[10px] uppercase tracking-[0.12em]"
+      >
+        <Mail className="size-3.5" aria-hidden="true" />
+        Email me
+      </a>
+    </div>
+  </main>
+</BaseLayout>

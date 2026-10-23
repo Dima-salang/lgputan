@@ -1,10 +1,17 @@
-//  @ts-check
+// @ts-check
 
 /** @type {import('prettier').Config} */
 const config = {
   semi: false,
   singleQuote: true,
-  trailingComma: "all",
-};
+  trailingComma: 'all',
+  plugins: ['prettier-plugin-astro'],
+  overrides: [
+    {
+      files: '*.astro',
+      options: { parser: 'astro' },
+    },
+  ],
+}
 
-export default config;
+export default config
