@@ -15,6 +15,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as BlogIdRouteImport } from './routes/blog.$id'
 import { Route as AdminSkillsRouteImport } from './routes/admin/skills'
@@ -56,6 +57,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/admin/skills': typeof AdminSkillsRoute
   '/blog/$id': typeof BlogIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -135,7 +142,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/blog': typeof BlogRouteWithChildren
   '/projects': typeof ProjectsRoute
   '/skills': typeof SkillsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -144,6 +150,7 @@ export interface FileRoutesByTo {
   '/admin/skills': typeof AdminSkillsRoute
   '/blog/$id': typeof BlogIdRoute
   '/admin': typeof AdminIndexRoute
+  '/blog': typeof BlogIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -164,6 +171,7 @@ export interface FileRoutesById {
   '/admin/skills': typeof AdminSkillsRoute
   '/blog/$id': typeof BlogIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -185,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin/skills'
     | '/blog/$id'
     | '/admin/'
+    | '/blog/'
     | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/api/trpc/$'
@@ -193,7 +202,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/blog'
     | '/projects'
     | '/skills'
     | '/admin/login'
@@ -202,6 +210,7 @@ export interface FileRouteTypes {
     | '/admin/skills'
     | '/blog/$id'
     | '/admin'
+    | '/blog'
     | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/api/trpc/$'
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/admin/skills'
     | '/blog/$id'
     | '/admin/'
+    | '/blog/'
     | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/api/trpc/$'
@@ -280,6 +290,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -399,10 +416,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BlogRouteChildren {
   BlogIdRoute: typeof BlogIdRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogIdRoute: BlogIdRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
