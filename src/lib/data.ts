@@ -22,9 +22,8 @@ export function splitLinks(url?: string | null): ProjectLink[] {
         host = ''
       }
 
-      const isCode = /github\.com|gitlab\.com|codeberg\.org|bitbucket\.org/i.test(
-        href,
-      )
+      const isCode =
+        /github\.com|gitlab\.com|codeberg\.org|bitbucket\.org/i.test(href)
 
       return {
         href,
@@ -36,9 +35,7 @@ export function splitLinks(url?: string | null): ProjectLink[] {
 }
 
 function parseDate(value: string): Date | null {
-  const normalized = value.includes('T')
-    ? value
-    : `${value.replace(' ', 'T')}Z`
+  const normalized = value.includes('T') ? value : `${value.replace(' ', 'T')}Z`
   const date = new Date(normalized)
   return Number.isNaN(date.getTime()) ? null : date
 }

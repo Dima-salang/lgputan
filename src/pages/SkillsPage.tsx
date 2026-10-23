@@ -57,7 +57,10 @@ export function SkillsPage() {
             </h2>
             <ol className="mt-5 space-y-4">
               {principles.map((principle, index) => (
-                <li key={principle} className="flex gap-3 text-sm leading-relaxed">
+                <li
+                  key={principle}
+                  className="flex gap-3 text-sm leading-relaxed"
+                >
                   <span className="font-mono text-[10px] text-acid">
                     0{index + 1}
                   </span>

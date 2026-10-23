@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 import superjson from 'superjson'
 import { createTRPCClient, httpBatchStreamLink } from '@trpc/client'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
@@ -17,7 +17,9 @@ function getUrl() {
 
 function getCookieHeader(): string | undefined {
   if (typeof document === 'undefined') return undefined
-  const cookies = document.cookie.split('; ').find(c => c.startsWith('admin_token='))
+  const cookies = document.cookie
+    .split('; ')
+    .find((c) => c.startsWith('admin_token='))
   return cookies || undefined
 }
 

@@ -11,7 +11,7 @@ export function ProjectRow({
   index: number
 }) {
   const links = splitLinks(project.url)
-  const primary = links[0]
+  const primary = links.at(0)
 
   return (
     <article className="group -mx-4 grid grid-cols-[2.25rem_1fr] gap-x-4 border-t border-border px-4 py-8 transition-colors duration-300 hover:bg-card/50 sm:grid-cols-[3.5rem_1fr_auto] sm:gap-x-8 sm:py-9">

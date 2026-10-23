@@ -1,10 +1,38 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowUpRight, Github, Mail } from 'lucide-react'
+import { Github, Globe, Linkedin, Mail } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { pages, site } from '#/content/site'
+import { trpc } from '#/integrations/trpc/react'
 import { LocalTime } from './site/LocalTime'
+
+const socialIcons: Record<string, LucideIcon> = {
+  github: Github,
+  linkedin: Linkedin,
+  mail: Mail,
+  email: Mail,
+  globe: Globe,
+}
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { data: quickLinks } = trpc.quickLinks.getQuickLinks.useQuery()
+
+  const links =
+    quickLinks && quickLinks.length > 0
+      ? quickLinks.filter(
+          (link) =>
+            Boolean(link.url) &&
+            !link.url?.toLowerCase().startsWith('mailto:') &&
+            link.name.toLowerCase() !== 'email',
+        )
+      : [
+          {
+            id: -1,
+            name: 'GitHub',
+            url: site.github,
+            icon: 'github',
+          },
+        ]
 
   return (
     <footer className="mt-24 border-t border-border">
@@ -18,7 +46,9 @@ export default function Footer() {
             <p className="mt-5 font-display text-4xl leading-[1.05] sm:text-5xl">
               Small tools,
               <br />
-              <span className="italic text-muted-foreground">carefully made.</span>
+              <span className="italic text-muted-foreground">
+                carefully made.
+              </span>
             </p>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
               {site.shortRole}, based in {site.location}.
@@ -50,17 +80,6 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5">
               <li>
                 <a
-                  href={site.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
-                >
-                  <Github className="size-3.5" aria-hidden="true" />
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
                   href={`mailto:${site.email}`}
                   className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
                 >
@@ -68,17 +87,23 @@ export default function Footer() {
                   Email
                 </a>
               </li>
-              <li>
-                <a
-                  href={site.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
-                >
-                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
-                  {site.githubHandle}
-                </a>
-              </li>
+              {links.map((link) => {
+                const Icon =
+                  socialIcons[(link.icon ?? 'globe').toLowerCase()] ?? Globe
+                return (
+                  <li key={link.id}>
+                    <a
+                      href={link.url ?? '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
+                    >
+                      <Icon className="size-3.5" aria-hidden="true" />
+                      {link.name}
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 

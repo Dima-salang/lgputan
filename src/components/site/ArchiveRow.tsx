@@ -1,11 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowUpRight } from 'lucide-react'
-import {
-  excerpt,
-  formatDate,
-  isDraft,
-  readingTime,
-} from '#/lib/data'
+import { excerpt, formatDate, isDraft, readingTime } from '#/lib/data'
 import type { Post } from '#/models/post'
 
 export function ArchiveRow({
@@ -43,7 +38,11 @@ export function ArchiveRow({
       </div>
 
       <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
-        {draft ? <span className="text-signal">Draft</span> : readingTime(post.content)}
+        {draft ? (
+          <span className="text-signal">Draft</span>
+        ) : (
+          readingTime(post.content)
+        )}
         <ArrowUpRight
           className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-acid"
           aria-hidden="true"

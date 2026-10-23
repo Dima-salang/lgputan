@@ -116,10 +116,6 @@ function About() {
       <section className="mt-16 grid gap-8 border-t border-border pt-12 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <h2 className="section-label">
-            <span className="index">01</span>
-            <span className="text-muted-foreground/50" aria-hidden="true">
-              /
-            </span>
             <span>How I work</span>
           </h2>
         </div>

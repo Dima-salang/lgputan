@@ -67,7 +67,11 @@ export function ProjectsPage() {
       </div>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects">
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Filter projects"
+        >
           {FILTERS.map((option) => (
             <button
               key={option.value}
@@ -86,7 +90,10 @@ export function ProjectsPage() {
         </div>
 
         <label className="flex w-full items-center gap-2 border border-border bg-card/50 px-3 py-2 transition-colors focus-within:border-acid/50 sm:w-72">
-          <Search className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <Search
+            className="size-3.5 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
           <span className="sr-only">Search projects</span>
           <input
             type="search"

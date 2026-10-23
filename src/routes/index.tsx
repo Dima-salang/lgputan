@@ -70,9 +70,12 @@ function NowPanel() {
 
       <div className="flex items-center justify-between border-t border-border px-4 py-3">
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-          {site.location}
+          GMT+8
         </span>
-        <span className="animate-blink font-mono text-xs text-acid" aria-hidden="true">
+        <span
+          className="animate-blink font-mono text-xs text-acid"
+          aria-hidden="true"
+        >
           _
         </span>
       </div>
@@ -100,11 +103,12 @@ function Home() {
         />
         <div className="page-shell relative grid gap-12 pb-16 pt-14 lg:grid-cols-12 lg:gap-10 lg:pb-24 lg:pt-20">
           <div className="lg:col-span-7">
-            <div
-              className="reveal flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
-            >
+            <div className="reveal flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
               <span className="inline-flex items-center gap-2">
-                <span className="size-1.5 rounded-full bg-acid" aria-hidden="true" />
+                <span
+                  className="size-1.5 rounded-full bg-acid"
+                  aria-hidden="true"
+                />
                 {site.availability}
               </span>
               <span className="text-border" aria-hidden="true">
@@ -162,7 +166,10 @@ function Home() {
             </div>
           </div>
 
-          <div className="reveal lg:col-span-5" style={{ animationDelay: '180ms' }}>
+          <div
+            className="reveal lg:col-span-5"
+            style={{ animationDelay: '180ms' }}
+          >
             <NowPanel />
           </div>
         </div>
@@ -186,20 +193,22 @@ function Home() {
             }
           />
 
-          <div className="border-b border-border">
+          <div>
             {projectsQuery.isLoading ? (
               <div className="space-y-3 border-t border-border py-8">
                 <div className="h-8 w-56 animate-pulse bg-secondary" />
                 <div className="h-4 w-full max-w-md animate-pulse bg-secondary" />
               </div>
             ) : projects.length > 0 ? (
-              projects.map((project, index) => (
-                <ProjectRow
-                  key={project.id}
-                  project={project}
-                  index={index + 1}
-                />
-              ))
+              projects
+                .slice(0, 4)
+                .map((project, index) => (
+                  <ProjectRow
+                    key={project.id}
+                    project={project}
+                    index={index + 1}
+                  />
+                ))
             ) : (
               <div className="border-t border-border py-14 text-center">
                 <p className="font-mono text-xs text-muted-foreground">
@@ -259,7 +268,7 @@ function Home() {
             }
           />
 
-          <div className="border-b border-border">
+          <div>
             {postsQuery.isLoading ? (
               <div className="space-y-3 border-t border-border py-6">
                 <div className="h-3 w-24 animate-pulse bg-secondary" />

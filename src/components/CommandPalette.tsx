@@ -141,7 +141,7 @@ export function CommandPalette() {
 
     if (event.key === 'Enter') {
       event.preventDefault()
-      const action = filtered[active]
+      const action = filtered.at(active)
       if (action) run(action)
     }
   }
@@ -158,7 +158,10 @@ export function CommandPalette() {
     >
       <div className="panel w-[min(92vw,38rem)] overflow-hidden">
         <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-          <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <Search
+            className="size-4 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
           <input
             ref={inputRef}
             value={query}
@@ -200,7 +203,9 @@ export function CommandPalette() {
                   onMouseEnter={() => setActive(index)}
                   onClick={() => run(action)}
                   className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors ${
-                    isActive ? 'bg-secondary text-foreground' : 'text-muted-foreground'
+                    isActive
+                      ? 'bg-secondary text-foreground'
+                      : 'text-muted-foreground'
                   }`}
                 >
                   <Icon

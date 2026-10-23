@@ -2,6 +2,7 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  useRouterState,
 } from '@tanstack/react-router'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
@@ -80,6 +81,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+  const isAdmin = pathname.startsWith('/admin')
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -87,13 +93,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <div className="site-grain" aria-hidden="true" />
-        <Header />
+        {isAdmin ? null : (
+          <>
+            <a href="#main" className="skip-link">
+              Skip to content
+            </a>
+            <div className="site-grain" aria-hidden="true" />
+            <Header />
+          </>
+        )}
         {children}
-        <Footer />
+        {isAdmin ? null : <Footer />}
         <Scripts />
       </body>
     </html>

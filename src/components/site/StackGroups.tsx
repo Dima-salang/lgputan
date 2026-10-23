@@ -14,7 +14,7 @@ import type { LucideIcon } from 'lucide-react'
 import { skillGroups } from '#/content/site'
 import type { Skill } from '#/models/skill'
 
-const icons: Record<string, LucideIcon> = {
+const icons: Partial<Record<string, LucideIcon>> = {
   python: Braces,
   go: Boxes,
   typescript: FileCode,
@@ -102,7 +102,10 @@ export function StackGroups({
                   key={skill.id}
                   className="flex items-center gap-2.5 border-b border-border py-2.5 font-mono text-[13px] text-foreground"
                 >
-                  <Icon className="size-3.5 shrink-0 text-acid" aria-hidden="true" />
+                  <Icon
+                    className="size-3.5 shrink-0 text-acid"
+                    aria-hidden="true"
+                  />
                   {skill.name}
                 </li>
               )

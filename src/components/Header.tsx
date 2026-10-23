@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { ArrowUpRight, Menu, Search, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
@@ -14,6 +14,7 @@ export default function Header() {
     select: (state) => state.location.pathname,
   })
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMenuOpen(false)
@@ -26,7 +27,28 @@ export default function Header() {
     document.body.style.overflow = 'hidden'
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMenuOpen(false)
+      if (event.key === 'Escape') {
+        setMenuOpen(false)
+        return
+      }
+
+      if (event.key !== 'Tab') return
+
+      const focusable = menuRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )
+      if (!focusable || focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
     }
 
     window.addEventListener('keydown', onKeyDown)
@@ -37,78 +59,81 @@ export default function Header() {
   }, [menuOpen])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
-      <div className="page-shell flex h-16 items-center gap-8">
-        <Link
-          to="/"
-          className="group inline-flex shrink-0 items-baseline gap-0.5 font-mono text-sm tracking-tight"
-          aria-label={`${site.wordmark} — home`}
-        >
-          <span className="text-foreground transition-colors group-hover:text-acid">
-            {site.wordmark}
-          </span>
-          <span className="text-acid" aria-hidden="true">
-            .
-          </span>
-        </Link>
-
-        <nav
-          className="hidden items-center gap-7 md:flex"
-          aria-label="Main navigation"
-        >
-          {pages.map((page) => (
-            <Link
-              key={page.to}
-              to={page.to}
-              className="nav-link"
-              activeProps={{ className: 'nav-link is-active' }}
-            >
-              {page.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-2">
-          <button
-            type="button"
-            onClick={openPalette}
-            className="hidden items-center gap-2 border border-border bg-card/60 px-2.5 py-1.5 text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground sm:flex"
-            aria-label="Open search menu"
+    <>
+      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
+        <div className="page-shell flex h-16 items-center gap-8">
+          <Link
+            to="/"
+            className="group inline-flex shrink-0 items-baseline gap-0.5 font-mono text-sm tracking-tight"
+            aria-label={`${site.wordmark} — home`}
           >
-            <Search className="size-3.5" aria-hidden="true" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em]">
-              Search
+            <span className="text-foreground transition-colors group-hover:text-acid">
+              {site.wordmark}
             </span>
-            <kbd className="kbd ml-1">⌘K</kbd>
-          </button>
+            <span className="text-acid" aria-hidden="true">
+              .
+            </span>
+          </Link>
 
-          <button
-            type="button"
-            onClick={openPalette}
-            className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground sm:hidden"
-            aria-label="Open search menu"
+          <nav
+            className="hidden items-center gap-7 md:flex"
+            aria-label="Main navigation"
           >
-            <Search className="size-4" aria-hidden="true" />
-          </button>
+            {pages.map((page) => (
+              <Link
+                key={page.to}
+                to={page.to}
+                className="nav-link"
+                activeProps={{ className: 'nav-link is-active' }}
+              >
+                {page.label}
+              </Link>
+            ))}
+          </nav>
 
-          <ThemeToggle />
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={openPalette}
+              className="hidden items-center gap-2 border border-border bg-card/60 px-2.5 py-1.5 text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground sm:flex"
+              aria-label="Open search menu"
+            >
+              <Search className="size-3.5" aria-hidden="true" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em]">
+                Search
+              </span>
+              <kbd className="kbd ml-1">⌘K</kbd>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setMenuOpen(true)}
-            className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground md:hidden"
-            aria-label="Open menu"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-          >
-            <Menu className="size-4" aria-hidden="true" />
-          </button>
+            <button
+              type="button"
+              onClick={openPalette}
+              className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground sm:hidden"
+              aria-label="Open search menu"
+            >
+              <Search className="size-4" aria-hidden="true" />
+            </button>
+
+            <ThemeToggle />
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground md:hidden"
+              aria-label="Open menu"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+            >
+              <Menu className="size-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
       {menuOpen ? (
         <div
           id="mobile-menu"
+          ref={menuRef}
           className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-background md:hidden"
           role="dialog"
           aria-modal="true"
@@ -130,7 +155,10 @@ export default function Header() {
             </button>
           </div>
 
-          <nav className="page-shell flex-1 py-4" aria-label="Mobile navigation">
+          <nav
+            className="page-shell flex-1 py-4"
+            aria-label="Mobile navigation"
+          >
             {pages.map((page, index) => (
               <Link
                 key={page.to}
@@ -175,6 +203,6 @@ export default function Header() {
       ) : null}
 
       <CommandPalette />
-    </header>
+    </>
   )
 }
