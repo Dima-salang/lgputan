@@ -1,15 +1,11 @@
-/**
- * Single source of truth for public site copy.
- */
-
 export const site = {
   name: 'Luis Gabrielle Putan',
   firstName: 'Luis',
   displayFirst: 'Luis Gabrielle',
   displayLast: 'Putan',
   wordmark: 'lgputan',
-  role: 'Computer Science student and full-stack engineer',
-  shortRole: 'Computer Science student & full-stack engineer',
+  role: 'computer Science student and full-stack engineer',
+  shortRole: 'full-stack engineer',
   location: 'Philippines',
   timeZone: 'Asia/Manila',
   email: 'putan.lgab@gmail.com',

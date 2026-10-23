@@ -1,13 +1,17 @@
 export type ProjectLink = {
   label: string
   href: string
-  kind: 'code' | 'live'
+  kind: 'code' | 'live' | 'other'
 }
 
 export type Project = {
   name: string
   description: string
   links: ProjectLink[]
+}
+
+export function isExternalProjectLink(href: string): boolean {
+  return /^https?:\/\//.test(href)
 }
 
 export function primaryProjectLink(project: Project): ProjectLink | undefined {
@@ -18,16 +22,32 @@ export function primaryProjectLink(project: Project): ProjectLink | undefined {
 
 export const projects: Project[] = [
   {
-    name: 'Excelsior Academy',
-    description: 'Better lectures and flashcards',
+    name: 'Aika',
+    description: 'Time Logging for Teams',
     links: [
       {
-        label: 'Source code',
+        label: 'code',
+        href: 'https://github.com/Dima-salang/aika',
+        kind: 'code',
+      },
+      {
+        label: 'site',
+        href: 'https://aika-logger.vercel.app',
+        kind: 'live',
+      },
+    ],
+  },
+  {
+    name: 'Excelsior Academy',
+    description: 'Site for learning with AI through flashcards and lectures',
+    links: [
+      {
+        label: 'code',
         href: 'https://github.com/Dima-salang/excelsior-learning',
         kind: 'code',
       },
       {
-        label: 'Live site',
+        label: 'site',
         href: 'https://excelsior-learning.vercel.app/login',
         kind: 'live',
       },
@@ -38,12 +58,12 @@ export const projects: Project[] = [
     description: 'Manga Hub for Readers',
     links: [
       {
-        label: 'Source code',
+        label: 'code',
         href: 'https://github.com/Dima-Salang/manga-mangos',
         kind: 'code',
       },
       {
-        label: 'Live site',
+        label: 'site',
         href: 'https://manga-mangos.vercel.app',
         kind: 'live',
       },
@@ -52,11 +72,12 @@ export const projects: Project[] = [
   {
     name: 'PomoLite',
     description: 'CLI-based Pomodoro Timer',
-    links: [],
-  },
-  {
-    name: 'Aika',
-    description: 'Time Logging for Teams',
-    links: [],
+    links: [
+      {
+        label: 'code',
+        href: 'https://github.com/Dima-salang/pomolite',
+        kind: 'code',
+      },
+    ],
   },
 ]
