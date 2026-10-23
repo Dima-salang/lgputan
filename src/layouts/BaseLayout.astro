@@ -43,7 +43,7 @@ const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getIte
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#08090a" />
+    <meta name="theme-color" content="#0d0d0d" />
     <meta name="author" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -60,15 +60,14 @@ const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getIte
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
     />
     <script is:inline set:html={THEME_INIT_SCRIPT} />
   </head>
-  <body class="min-h-screen bg-background font-sans text-foreground antialiased">
+  <body class="min-h-screen bg-background font-mono text-foreground antialiased">
     <a href="#main" class="skip-link">
       Skip to content
     </a>
-    <div class="site-grain" aria-hidden="true"></div>
     <Header
       client:load
       pathname={Astro.url.pathname}

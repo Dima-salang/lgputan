@@ -1,104 +1,68 @@
 ---
-import { Mail } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { links } from '#/data/links'
 import { pages, site } from '#/data/site'
 import { LocalTime } from '#/components/site/LocalTime'
-import { SocialIcon } from '#/components/site/SocialIcon'
 
 const year = new Date().getFullYear()
 ---
 
 <footer class="mt-24 border-t border-border">
-  <div class="page-shell py-14">
-    <div class="grid gap-10 md:grid-cols-12">
-      <div class="md:col-span-5">
-        <p class="font-mono text-sm text-foreground">
-          {site.wordmark}
-          <span class="text-acid">.</span>
-        </p>
-        <p class="mt-5 font-display text-4xl leading-[1.05] sm:text-5xl">
-          Small tools,
-          <br />
+  <div class="page-shell py-10">
+    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-sm text-foreground">
+          Small tools,{' '}
           <span class="italic text-muted-foreground">carefully made.</span>
         </p>
-        <p class="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
+        <p class="mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
           {site.shortRole}, based in {site.location}.
         </p>
       </div>
 
-      <div class="md:col-span-2">
-        <h2 class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          Pages
-        </h2>
-        <ul class="mt-4 space-y-2.5">
-          {pages.map((page) => (
-            <li>
-              <a
-                href={page.to}
-                class="text-sm text-foreground/80 transition-colors hover:text-acid"
-              >
-                {page.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="md:col-span-2">
-        <h2 class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          Find me
-        </h2>
-        <ul class="mt-4 space-y-2.5">
-          <li>
-            <a
-              href={`mailto:${site.email}`}
-              class="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
-            >
-              <Mail className="size-3.5" aria-hidden="true" />
-              Email
-            </a>
-          </li>
-          {links.map((link) => (
-            <li>
-              <a
-                href={link.url}
-                target={link.url.startsWith('http') ? '_blank' : undefined}
-                rel={
-                  link.url.startsWith('http')
-                    ? 'noopener noreferrer'
-                    : undefined
-                }
-                class="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
-              >
-                <SocialIcon icon={link.icon} className="size-3.5" />
-                {link.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="md:col-span-3">
-        <h2 class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          Local time
-        </h2>
-        <p class="mt-4 font-mono text-sm text-foreground">
-          <LocalTime client:idle />
-          <span class="ml-2 text-muted-foreground">{site.location}</span>
-        </p>
-        <p class="mt-2 font-mono text-[11px] text-muted-foreground">
-          {site.availability}
-        </p>
-      </div>
+      <nav
+        class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground"
+        aria-label="Footer navigation"
+      >
+        {pages.map((page) => (
+          <a href={page.to} class="transition-colors hover:text-foreground">
+            {page.label}
+          </a>
+        ))}
+        <a
+          href={`mailto:${site.email}`}
+          class="inline-flex items-center gap-1 transition-colors hover:text-foreground"
+        >
+          Email
+          <ArrowUpRight className="size-3" aria-hidden="true" />
+        </a>
+        {links.map((link) => (
+          <a
+            href={link.url}
+            target={link.url.startsWith('http') ? '_blank' : undefined}
+            rel={
+              link.url.startsWith('http') ? 'noopener noreferrer' : undefined
+            }
+            class="inline-flex items-center gap-1 transition-colors hover:text-foreground"
+          >
+            {link.name}
+            <ArrowUpRight className="size-3" aria-hidden="true" />
+          </a>
+        ))}
+      </nav>
     </div>
 
-    <div class="mt-12 flex flex-col gap-3 border-t border-border pt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+    <div class="mt-8 flex flex-col gap-2 border-t border-border pt-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
       <p>
         © {year} {site.name}
       </p>
-      <div class="flex items-center gap-5">
-        <span>Designed and built by Luis</span>
-      </div>
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span>
+          <LocalTime client:idle /> in {site.location}
+        </span>
+        <span aria-hidden="true">/</span>
+        <span>{site.availability}</span>
+      </p>
     </div>
   </div>
 </footer>

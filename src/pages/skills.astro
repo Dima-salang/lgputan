@@ -1,81 +1,78 @@
 ---
-import { ArrowUpRight, GithubIcon, Mail } from 'lucide-react'
+import { ArrowUpRight, Mail } from 'lucide-react'
 import BaseLayout from '#/layouts/BaseLayout.astro'
 import StackGroups from '#/components/site/StackGroups.astro'
 import { principles, site } from '#/data/site'
+import { skillGroups } from '#/data/skills'
+
+const total = skillGroups.reduce(
+  (count, group) => count + group.items.length,
+  0,
+)
 ---
 
 <BaseLayout
   title={`Skills — ${site.name}`}
   description="The languages, frameworks, and tools I reach for most."
 >
-  <main id="main" class="page-shell py-14 sm:py-20">
-    <div class="border-b border-border pb-10">
-      <p class="section-label">
-        <span class="index">02</span>
-        <span class="text-muted-foreground/50" aria-hidden="true">
-          /
-        </span>
-        <span>Skills</span>
-      </p>
-      <h1 class="mt-6 max-w-3xl font-display text-[clamp(3.2rem,8vw,6rem)] leading-[0.9] tracking-[-0.035em]">
-        What I work with<span class="text-acid">.</span>
-      </h1>
-      <p class="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-        The languages, frameworks, and tools I reach for most, grouped by what
-        they do. No ratings — just the things I actually use.
+  <main id="main" class="page-shell pb-20 pt-14 sm:pt-20">
+    <div class="grid gap-8 border-b border-border pb-8 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <p class="label">Skills</p>
+        <h1 class="mt-4 max-w-2xl text-[clamp(1.8rem,4vw,3rem)] leading-tight">
+          What I work with<span class="text-muted-foreground">.</span>
+        </h1>
+        <p class="measure mt-5 text-sm leading-7 text-muted-foreground">
+          The languages, frameworks, and tools I reach for most, grouped by what
+          they do. No ratings — just the things I actually use.
+        </p>
+      </div>
+
+      <p class="text-xs text-muted-foreground lg:col-span-3 lg:col-start-10 lg:self-end">
+        {total} tools in {skillGroups.length} groups
       </p>
     </div>
 
-    <div class="mt-12 grid gap-12 lg:grid-cols-12">
+    <div class="grid gap-12 pt-10 lg:grid-cols-12">
       <div class="lg:col-span-8">
         <StackGroups columns={2} />
       </div>
 
-      <aside class="space-y-8 lg:col-span-4">
-        <section class="panel p-6">
-          <h2 class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            How I work
-          </h2>
-          <ol class="mt-5 space-y-4">
+      <aside class="space-y-10 lg:col-span-3 lg:col-start-10">
+        <section>
+          <h2 class="label">How I work</h2>
+          <ol class="mt-4">
             {principles.map((principle, index) => (
-              <li class="flex gap-3 text-sm leading-relaxed">
-                <span class="font-mono text-[10px] text-acid">
-                  0{index + 1}
+              <li class="flex gap-3 border-b border-border py-3 text-sm leading-6">
+                <span class="text-xs text-muted-foreground">
+                  {String(index + 1).padStart(2, '0')}
                 </span>
-                <span class="text-foreground/85">{principle}</span>
+                <span>{principle}</span>
               </li>
             ))}
           </ol>
         </section>
 
-        <section class="panel p-6">
-          <h2 class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            Find me
-          </h2>
-          <div class="mt-5 space-y-3">
+        <section class="border-t border-border pt-6">
+          <h2 class="label">Find me</h2>
+          <div class="mt-4 space-y-3 text-sm">
             <a
               href={site.github}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-2 text-sm text-foreground/80 transition-colors hover:text-acid"
+              class="link-underline flex w-fit"
             >
-              <GithubIcon className="size-4" aria-hidden="true" />
-              {site.githubHandle}
-              <ArrowUpRight className="ml-auto size-3.5" aria-hidden="true" />
+              GitHub
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
             </a>
-            <a
-              href={`mailto:${site.email}`}
-              class="flex items-center gap-2 text-sm text-foreground/80 transition-colors hover:text-acid"
-            >
-              <Mail className="size-4" aria-hidden="true" />
+            <a href={`mailto:${site.email}`} class="link-underline flex w-fit">
+              <Mail className="size-3.5" aria-hidden="true" />
               Email
-              <ArrowUpRight className="ml-auto size-3.5" aria-hidden="true" />
             </a>
           </div>
         </section>
 
-        <p class="font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-muted-foreground">
+        <p class="text-xs leading-6 text-muted-foreground">
           {site.availability}
         </p>
       </aside>

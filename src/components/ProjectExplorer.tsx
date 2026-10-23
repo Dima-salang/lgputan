@@ -7,7 +7,7 @@ type Filter = 'all' | 'live' | 'code'
 
 const FILTERS: Array<{ value: Filter; label: string }> = [
   { value: 'all', label: 'All' },
-  { value: 'live', label: 'Has a live site' },
+  { value: 'live', label: 'Live' },
   { value: 'code', label: 'Source only' },
 ]
 
@@ -39,9 +39,9 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
 
   return (
     <>
-      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-8 flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div
-          className="flex flex-wrap gap-2"
+          className="flex flex-wrap items-center gap-5"
           role="group"
           aria-label="Filter projects"
         >
@@ -51,10 +51,10 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
               type="button"
               onClick={() => setFilter(option.value)}
               aria-pressed={filter === option.value}
-              className={`border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
+              className={`text-xs transition-colors ${
                 filter === option.value
-                  ? 'border-acid bg-acid text-primary-foreground'
-                  : 'border-border text-muted-foreground hover:border-acid/40 hover:text-foreground'
+                  ? 'text-foreground underline underline-offset-4'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {option.label}
@@ -62,7 +62,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
           ))}
         </div>
 
-        <label className="flex w-full items-center gap-2 border border-border bg-card/50 px-3 py-2 transition-colors focus-within:border-acid/50 sm:w-72">
+        <label className="flex w-full items-center gap-2 border-b border-border py-1 transition-colors focus-within:border-foreground sm:w-64">
           <Search
             className="size-3.5 shrink-0 text-muted-foreground"
             aria-hidden="true"
@@ -73,7 +73,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search projects"
-            className="w-full bg-transparent font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
+            className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
           />
           {query ? (
             <button
@@ -88,19 +88,15 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
         </label>
       </div>
 
-      <div className="mt-2 border-b border-border">
+      <div>
         {filtered.length > 0 ? (
-          filtered.map((project, index) => (
-            <ProjectRow
-              key={project.name}
-              project={project}
-              index={index + 1}
-            />
+          filtered.map((project) => (
+            <ProjectRow key={project.name} project={project} />
           ))
         ) : (
           <div className="border-t border-border py-16 text-center">
-            <p className="font-display text-3xl">Nothing matches.</p>
-            <p className="mt-2 font-mono text-xs text-muted-foreground">
+            <p className="text-sm text-foreground">Nothing matches.</p>
+            <p className="mt-2 text-xs text-muted-foreground">
               Try a different search or filter.
             </p>
             <button
@@ -109,7 +105,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                 setFilter('all')
                 setQuery('')
               }}
-              className="mt-6 border border-border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground"
+              className="link-underline mt-6 text-xs"
             >
               Reset filters
             </button>

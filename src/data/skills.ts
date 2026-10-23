@@ -8,10 +8,6 @@ export type SkillGroup = {
   items: Skill[]
 }
 
-/**
- * Skills are curated by hand. Keep this list limited to tools
- * that are actually used on the site's projects.
- */
 export const skillGroups: SkillGroup[] = [
   {
     name: 'Languages',
@@ -38,7 +34,10 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     name: 'Other',
-    items: [{ name: 'AI-Ready', icon: 'ai-ready' }],
+    items: [
+      { name: 'AI-Ready', icon: 'ai-ready' },
+      { name: 'Unity', icon: 'unity' },
+    ],
   },
 ]
 

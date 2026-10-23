@@ -11,26 +11,20 @@ const total = projects.length
   title={`Work — ${site.name}`}
   description="A few things I have built: study tools, a manga reader, a timer, and a time logger."
 >
-  <main id="main" class="page-shell py-14 sm:py-20">
-    <div class="flex flex-col gap-8 border-b border-border pb-10 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <p class="section-label">
-          <span class="index">01</span>
-          <span class="text-muted-foreground/50" aria-hidden="true">
-            /
-          </span>
-          <span>Work</span>
-        </p>
-        <h1 class="mt-6 font-display text-[clamp(3.5rem,9vw,7rem)] leading-[0.88] tracking-[-0.035em]">
-          Work<span class="text-acid">.</span>
+  <main id="main" class="page-shell pb-20 pt-14 sm:pt-20">
+    <div class="grid gap-8 border-b border-border pb-8 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <p class="label">Work</p>
+        <h1 class="mt-4 text-[clamp(1.8rem,4vw,3rem)] leading-tight">
+          Work<span class="text-muted-foreground">.</span>
         </h1>
-        <p class="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <p class="measure mt-5 text-sm leading-7 text-muted-foreground">
           A few things I've built. Most of them started as a problem I had, then
           grew into something I could share.
         </p>
       </div>
 
-      <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <p class="text-xs text-muted-foreground lg:col-span-3 lg:col-start-10 lg:self-end">
         {total} project{total === 1 ? '' : 's'}
       </p>
     </div>

@@ -1,15 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  CornerDownLeft,
-  FileText,
-  FolderOpen,
-  GithubIcon,
-  Layers,
-  Mail,
-  Search,
-  User,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import { CornerDownLeft, Search } from 'lucide-react'
 import { pages, site } from '#/data/site'
 import type { PalettePost, PaletteProject } from '#/lib/search'
 
@@ -17,15 +7,7 @@ type Action = {
   id: string
   label: string
   description: string
-  icon: LucideIcon
   href: string
-}
-
-const pageIcons: Record<string, LucideIcon> = {
-  '/projects': FolderOpen,
-  '/skills': Layers,
-  '/blog': FileText,
-  '/about': User,
 }
 
 export function CommandPalette({
@@ -46,35 +28,30 @@ export function CommandPalette({
         id: page.to,
         label: page.label,
         description: page.description,
-        icon: pageIcons[page.to] ?? FolderOpen,
         href: page.to,
       })),
       ...posts.map((post) => ({
         id: `post-${post.slug}`,
         label: post.title,
         description: `Writing · ${post.description}`,
-        icon: FileText,
         href: `/blog/${post.slug}`,
       })),
       ...projects.map((project) => ({
         id: `project-${project.name}`,
         label: project.name,
         description: `Work · ${project.description}`,
-        icon: FolderOpen,
         href: project.href ?? '/projects',
       })),
       {
         id: 'github',
         label: 'GitHub',
         description: `Projects and code on ${site.githubHandle}`,
-        icon: GithubIcon,
         href: site.github,
       },
       {
         id: 'email',
         label: 'Email',
         description: site.email,
-        icon: Mail,
         href: `mailto:${site.email}`,
       },
     ],
@@ -167,7 +144,7 @@ export function CommandPalette({
         if (event.target === dialogRef.current) close()
       }}
     >
-      <div className="panel w-[min(92vw,38rem)] overflow-hidden">
+      <div className="w-[min(92vw,36rem)] border border-border bg-background shadow-2xl">
         <div className="flex items-center gap-3 border-b border-border px-4 py-3">
           <Search
             className="size-4 shrink-0 text-muted-foreground"
@@ -181,13 +158,13 @@ export function CommandPalette({
               setActive(0)
             }}
             onKeyDown={onInputKeyDown}
-            placeholder="Search pages, writing, work…"
+            placeholder="Search pages, writing, work"
             aria-label="Search"
             aria-controls="palette-results"
             aria-activedescendant={
               filtered.length > 0 ? `palette-option-${active}` : undefined
             }
-            className="w-full bg-transparent font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
+            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
           />
           <kbd className="kbd">Esc</kbd>
         </div>
@@ -196,15 +173,14 @@ export function CommandPalette({
           id="palette-results"
           role="listbox"
           aria-label="Results"
-          className="max-h-[min(60vh,22rem)] overflow-y-auto p-2"
+          className="max-h-[min(60vh,22rem)] overflow-y-auto"
         >
           {filtered.length === 0 ? (
-            <p className="px-3 py-8 text-center font-mono text-xs text-muted-foreground">
+            <p className="px-4 py-10 text-center text-xs text-muted-foreground">
               No matches for “{query}”
             </p>
           ) : (
             filtered.map((action, index) => {
-              const Icon = action.icon
               const isActive = index === active
 
               return (
@@ -216,21 +192,21 @@ export function CommandPalette({
                   aria-selected={isActive}
                   onMouseEnter={() => setActive(index)}
                   onClick={() => run(action)}
-                  className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors ${
-                    isActive
-                      ? 'bg-secondary text-foreground'
-                      : 'text-muted-foreground'
+                  className={`flex w-full items-baseline justify-between gap-6 border-b border-border/60 px-4 py-3 text-left transition-colors last:border-0 ${
+                    isActive ? 'bg-secondary/60' : ''
                   }`}
                 >
-                  <Icon
-                    className={`size-4 shrink-0 ${isActive ? 'text-acid' : ''}`}
-                    aria-hidden="true"
-                  />
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-mono text-[13px] text-foreground">
+                  <span className="min-w-0">
+                    <span
+                      className={`block text-sm ${
+                        isActive
+                          ? 'text-foreground underline underline-offset-4'
+                          : 'text-foreground/80'
+                      }`}
+                    >
                       {action.label}
                     </span>
-                    <span className="block truncate text-xs text-muted-foreground">
+                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                       {action.description}
                     </span>
                   </span>
@@ -246,10 +222,10 @@ export function CommandPalette({
           )}
         </div>
 
-        <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
-          <span>↑↓ to move</span>
-          <span>↵ to open</span>
-          <span className="ml-auto">Esc to close</span>
+        <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 text-[11px] text-muted-foreground">
+          <span>↑↓ move</span>
+          <span>↵ open</span>
+          <span className="ml-auto">esc close</span>
         </div>
       </div>
     </dialog>

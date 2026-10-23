@@ -1,4 +1,5 @@
 # lgputan
+
 ## Commands
 
 ```bash
@@ -41,11 +42,11 @@ Set `draft: true` while a post is unfinished. Drafts are excluded from the writi
 
 Projects live in `src/data/projects.ts`. Each project has a name, description, and an optional list of links.
 
-Skills live in `src/data/skills.ts`, grouped by category. They are rendered with Lucide icons.
+Skills live in `src/data/skills.ts`, grouped by category. They render as compact text groups.
 
 ### Site copy
 
-Personal details, bio, navigation, and the "now" panel live in `src/data/site.ts`. Social links live in `src/data/links.ts`.
+Personal details, bio, navigation, and the "now" copy live in `src/data/site.ts`. Social links live in `src/data/links.ts`.
 
 ## Deploying
 

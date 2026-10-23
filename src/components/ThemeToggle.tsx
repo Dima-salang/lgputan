@@ -77,7 +77,7 @@ export default function ThemeToggle({
       onClick={toggleMode}
       aria-label={`Theme: ${MODE_LABEL[mode]}. Switch to ${next}.`}
       title={`Theme: ${MODE_LABEL[mode]} — click for ${next}`}
-      className={`grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/50 hover:text-foreground ${className}`}
+      className={`grid size-8 place-items-center text-muted-foreground transition-colors hover:text-foreground ${className}`}
     >
       <Icon className="size-4" aria-hidden="true" />
     </button>

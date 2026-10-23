@@ -1,212 +1,276 @@
 ---
-import { ArrowRight, ArrowUpRight, GithubIcon, Mail } from 'lucide-react'
+import { ArrowUpRight, Mail } from 'lucide-react'
 import BaseLayout from '#/layouts/BaseLayout.astro'
-import ArchiveRow from '#/components/site/ArchiveRow.astro'
-import Marquee from '#/components/site/Marquee.astro'
-import NowPanel from '#/components/site/NowPanel.astro'
-import { ProjectRow } from '#/components/site/ProjectRow'
-import SectionHead from '#/components/site/SectionHead.astro'
-import StackGroups from '#/components/site/StackGroups.astro'
-import { projects } from '#/data/projects'
-import { site } from '#/data/site'
-import { skills } from '#/data/skills'
+import { LocalTime } from '#/components/site/LocalTime'
+import { primaryProjectLink, projects } from '#/data/projects'
+import { bio, now, site } from '#/data/site'
+import { skillGroups } from '#/data/skills'
 import { getPublishedPosts } from '#/lib/content'
+import { formatDate } from '#/lib/data'
 
 const posts = await getPublishedPosts()
 const featuredPosts = posts.slice(0, 3)
 const featuredProjects = projects.slice(0, 4)
+const building = now.find((item) => item.label === 'Building')?.value
+const buildingProject = projects.find((project) => project.name === building)
+const buildingLink = buildingProject
+  ? primaryProjectLink(buildingProject)
+  : undefined
 ---
 
 <BaseLayout>
   <main id="main">
-    <section class="relative overflow-hidden border-b border-border">
-      <div
-        class="dot-grid pointer-events-none absolute inset-0 opacity-50"
-        aria-hidden="true"
-      ></div>
-      <div class="page-shell relative grid gap-12 pb-16 pt-14 lg:grid-cols-12 lg:gap-10 lg:pb-24 lg:pt-20">
-        <div class="lg:col-span-7">
-          <div class="reveal flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span class="inline-flex items-center gap-2">
-              <span
-                class="size-1.5 rounded-full bg-acid"
-                aria-hidden="true"
-              ></span>
-              {site.availability}
-            </span>
-            <span class="text-border" aria-hidden="true">
+    <section class="page-shell pb-14 pt-16 sm:pb-20 sm:pt-24">
+      <div class="grid gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-8">
+          <div class="reveal flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <span class="text-foreground">{site.name}</span>
+            <span class="hidden sm:inline" aria-hidden="true">
               /
             </span>
-            <span>{site.location}</span>
+            <span class="block sm:inline">{site.shortRole}</span>
           </div>
 
-          <h1
-            class="reveal mt-7 font-display text-[clamp(3.4rem,9vw,7rem)] leading-[0.86] tracking-[-0.035em]"
-            style="animation-delay: 80ms"
-          >
-            {site.displayFirst}
-            <br />
-            <span class="italic">{site.displayLast}</span>
-            <span class="text-acid">.</span>
-          </h1>
-
           <p
-            class="reveal mt-8 max-w-xl text-lg leading-relaxed text-foreground/90"
-            style="animation-delay: 160ms"
+            class="reveal mt-10 max-w-3xl text-[clamp(1.45rem,2.6vw,2.15rem)] leading-[1.45] tracking-[-0.01em]"
+            style="animation-delay: 60ms"
           >
-            {site.shortRole}. {site.intro}
+            {site.intro}
           </p>
 
           <p
-            class="reveal mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground"
-            style="animation-delay: 220ms"
+            class="reveal mt-6 max-w-xl text-sm leading-7 text-muted-foreground"
+            style="animation-delay: 120ms"
           >
             Currently building Excelsior Academy and finishing a Computer
             Science degree.
           </p>
 
           <div
-            class="reveal mt-9 flex flex-wrap items-center gap-6"
-            style="animation-delay: 280ms"
+            class="reveal mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm"
+            style="animation-delay: 180ms"
           >
-            <a
-              href="/projects"
-              class="group inline-flex items-center gap-3 bg-primary px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              See my work
-              <ArrowRight
-                className="size-4 transition-transform group-hover:translate-x-1"
-                aria-hidden="true"
-              />
-            </a>
-            <a
-              href={`mailto:${site.email}`}
-              class="link-underline text-[11px] uppercase tracking-[0.14em]"
-            >
+            <a href={`mailto:${site.email}`} class="link-underline">
               <Mail className="size-3.5" aria-hidden="true" />
-              Email me
+              Email
             </a>
-          </div>
-        </div>
-
-        <div class="reveal lg:col-span-5" style="animation-delay: 180ms">
-          <NowPanel />
-        </div>
-      </div>
-    </section>
-
-    <Marquee items={skills.map((skill) => skill.name)} />
-
-    <div class="page-shell">
-      <section class="py-16 sm:py-20">
-        <SectionHead index="01" title="Selected work">
-          <a
-            href="/projects"
-            class="link-underline text-[10px] uppercase tracking-[0.12em]"
-          >
-            All projects
-            <ArrowUpRight className="size-3.5" aria-hidden="true" />
-          </a>
-        </SectionHead>
-
-        <div>
-          {featuredProjects.length > 0 ? (
-            featuredProjects.map((project, index) => (
-              <ProjectRow project={project} index={index + 1} />
-            ))
-          ) : (
-            <div class="border-t border-border py-14 text-center">
-              <p class="font-mono text-xs text-muted-foreground">
-                No projects yet. New work will appear here.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section class="border-t border-border py-16 sm:py-20">
-        <SectionHead index="02" title="Tools I work with">
-          <a
-            href="/skills"
-            class="link-underline text-[10px] uppercase tracking-[0.12em]"
-          >
-            All skills
-            <ArrowUpRight className="size-3.5" aria-hidden="true" />
-          </a>
-        </SectionHead>
-
-        <StackGroups />
-      </section>
-
-      <section class="border-t border-border py-16 sm:py-20">
-        <SectionHead index="03" title="Writing">
-          <a
-            href="/blog"
-            class="link-underline text-[10px] uppercase tracking-[0.12em]"
-          >
-            All writing
-            <ArrowUpRight className="size-3.5" aria-hidden="true" />
-          </a>
-        </SectionHead>
-
-        <div>
-          {featuredPosts.length > 0 ? (
-            featuredPosts.map((post) => <ArchiveRow post={post} />)
-          ) : (
-            <div class="border-t border-border py-12 text-center">
-              <p class="font-mono text-xs text-muted-foreground">
-                No published posts yet. The first one is in progress.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section class="border-t border-border py-16 sm:py-24">
-        <p class="section-label">
-          <span class="index">04</span>
-          <span class="text-muted-foreground/50" aria-hidden="true">
-            /
-          </span>
-          <span>Contact</span>
-        </p>
-
-        <div class="mt-8 grid gap-10 lg:grid-cols-12">
-          <div class="lg:col-span-8">
-            <h2 class="font-display text-[clamp(2.8rem,7vw,5.5rem)] leading-[0.92] tracking-[-0.03em]">
-              Let's build
-              <br />
-              <span class="italic">something.</span>
-            </h2>
-          </div>
-
-          <div class="space-y-6 self-end lg:col-span-4">
-            <p class="text-sm leading-relaxed text-muted-foreground">
-              I'm open to new opportunities and happy to talk about projects,
-              school, or anything you're building.
-            </p>
-
-            <a
-              href={`mailto:${site.email}`}
-              class="link-underline break-all text-sm sm:text-base"
-            >
-              <Mail className="size-4" aria-hidden="true" />
-              {site.email}
-            </a>
-
             <a
               href={site.github}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex w-fit items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-acid"
+              class="link-underline"
             >
-              <GithubIcon className="size-4" aria-hidden="true" />
-              {site.githubHandle}
+              GitHub
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </a>
+            <a href="/projects" class="link-underline">
+              Work
               <ArrowUpRight className="size-3.5" aria-hidden="true" />
             </a>
           </div>
         </div>
-      </section>
-    </div>
+
+        <aside
+          class="reveal lg:col-span-3 lg:col-start-10 lg:self-end"
+          style="animation-delay: 160ms"
+        >
+          <dl class="border-t border-border text-xs">
+            <div class="flex items-baseline justify-between gap-4 border-b border-border py-2.5">
+              <dt class="text-muted-foreground">Based in</dt>
+              <dd>{site.location}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-border py-2.5">
+              <dt class="text-muted-foreground">Local time</dt>
+              <dd>
+                <LocalTime client:idle />
+              </dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-border py-2.5">
+              <dt class="text-muted-foreground">Status</dt>
+              <dd class="flex items-center gap-2 text-right">
+                <span
+                  class="inline-block size-1.5 rounded-full bg-foreground"
+                  aria-hidden="true"
+                ></span>
+                {site.availability}
+              </dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="page-shell grid gap-10 py-12 md:grid-cols-3 md:gap-12">
+        <section>
+          <h2 class="label">Building</h2>
+          <div class="mt-4">
+            <p class="text-sm">
+              {buildingLink ? (
+                <a
+                  href={buildingLink.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="row-link inline-flex items-baseline gap-1.5"
+                >
+                  {building}
+                  <ArrowUpRight
+                    className="size-3.5 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                </a>
+              ) : (
+                building
+              )}
+            </p>
+            <p class="mt-1 text-xs leading-6 text-muted-foreground">
+              {buildingProject?.description ??
+                'A study tool for better lectures and flashcards.'}
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="label">Projects</h2>
+          <ul class="mt-4 space-y-4">
+            {featuredProjects.map((project) => {
+              const primary = primaryProjectLink(project)
+              return (
+                <li>
+                  <p class="text-sm">
+                    {primary ? (
+                      <a
+                        href={primary.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="row-link inline-flex items-baseline gap-1.5"
+                      >
+                        {project.name}
+                        <ArrowUpRight
+                          className="size-3.5 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    ) : (
+                      project.name
+                    )}
+                  </p>
+                  <p class="mt-0.5 text-xs leading-6 text-muted-foreground">
+                    {project.description}
+                  </p>
+                </li>
+              )
+            })}
+          </ul>
+          <a href="/projects" class="link-underline mt-5 text-xs">
+            All projects
+            <ArrowUpRight className="size-3" aria-hidden="true" />
+          </a>
+        </section>
+
+        <section>
+          <h2 class="label">Writing</h2>
+          {featuredPosts.length > 0 ? (
+            <ul class="mt-4 space-y-4">
+              {featuredPosts.map((post) => (
+                <li>
+                  <a href={`/blog/${post.slug}`} class="group block">
+                    <span class="row-link text-sm">{post.title}</span>
+                    <span class="mt-0.5 block text-xs text-muted-foreground">
+                      {formatDate(post.date)}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="mt-4 text-sm leading-7 text-muted-foreground">
+              No published posts yet.
+            </p>
+          )}
+          <a href="/blog" class="link-underline mt-5 text-xs">
+            All writing
+            <ArrowUpRight className="size-3" aria-hidden="true" />
+          </a>
+        </section>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="page-shell grid gap-8 py-12 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-3">
+          <h2 class="label">Now</h2>
+        </div>
+
+        <div class="lg:col-span-8 lg:col-start-5">
+          <p class="max-w-2xl text-sm leading-7 text-muted-foreground"></p>
+          <p class="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
+            {bio[2]}
+          </p>
+          <a
+            href={site.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-underline mt-4 text-xs"
+          >
+            {site.githubHandle}
+            <ArrowUpRight className="size-3" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="page-shell grid gap-8 py-12 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-3">
+          <h2 class="label">Tools</h2>
+        </div>
+
+        <div class="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:col-span-8 lg:col-start-5">
+          {skillGroups.map((group) => (
+            <div>
+              <h3 class="label">{group.name}</h3>
+              <p class="mt-2 text-sm leading-7 text-muted-foreground">
+                {group.items.map((skill) => skill.name).join(', ')}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="page-shell grid gap-10 py-16 lg:grid-cols-12 lg:py-24">
+        <div class="lg:col-span-7">
+          <h2 class="text-[clamp(1.75rem,3.4vw,2.75rem)] leading-[1.2]">
+            Let's build{' '}
+            <span class="italic text-muted-foreground">something.</span>
+          </h2>
+        </div>
+
+        <div class="lg:col-span-4 lg:col-start-9">
+          <p class="text-sm leading-7 text-muted-foreground">
+            {site.availability}. I'm happy to talk about roles, projects, or
+            anything you're building.
+          </p>
+          <a
+            href={`mailto:${site.email}`}
+            class="link-underline mt-5 break-all text-sm"
+          >
+            <Mail className="size-3.5" aria-hidden="true" />
+            {site.email}
+          </a>
+          <a
+            href={site.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-underline mt-3 flex w-fit text-sm"
+          >
+            GitHub
+            <ArrowUpRight className="size-3.5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 </BaseLayout>
