@@ -48,7 +48,7 @@ export function AdminEditBlog() {
     if (isNew) {
       addMutation.mutate({ title, content })
     } else {
-      updateMutation.mutate({ id: parseInt(id!), title, content })
+      updateMutation.mutate({ id: parseInt(id), title, content })
     }
   }
 
@@ -59,36 +59,37 @@ export function AdminEditBlog() {
   if (!isNew && isFetching) {
     return (
       <div className="flex items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/70" />
       </div>
     )
   }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
-      <div className="flex items-center gap-4 border-b border-zinc-800 pb-4">
+      <div className="flex items-center gap-4 border-b border-border pb-4">
         <button
           onClick={handleBack}
-          className="text-zinc-500 hover:text-zinc-100 p-2"
+          aria-label="Back to posts"
+          className="text-muted-foreground hover:text-foreground p-2"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div>
-          <h2 className="text-2xl font-bold font-mono tracking-tight text-zinc-100">
-            {isNew ? 'NEW_POST_' : 'EDIT_POST_'}
+          <h2 className="font-display text-4xl leading-none text-foreground">
+            {isNew ? 'New post' : 'Edit post'}
           </h2>
-          <p className="text-sm text-zinc-500 font-mono">
-            &gt; {isNew ? 'create article' : 'modify article'}
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            {isNew ? 'Write a new post.' : 'Edit this post.'}
           </p>
         </div>
       </div>
 
-      <div className="border border-zinc-800 bg-zinc-950">
+      <div className="border border-border bg-background">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-2 p-6 pb-0">
             <Label
               htmlFor="title"
-              className="font-mono text-zinc-400 text-xs uppercase"
+              className="font-mono text-muted-foreground text-xs uppercase"
             >
               Title
             </Label>
@@ -98,46 +99,48 @@ export function AdminEditBlog() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter post title..."
               required
-              className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100 text-lg"
+              className="bg-secondary border-border font-mono text-foreground text-lg"
             />
           </div>
 
-          <div className="flex items-center gap-2 px-6 border-b border-zinc-800">
+          <div className="flex items-center gap-2 px-6 border-b border-border">
             <button
               type="button"
               onClick={() => setShowPreview(false)}
               className={`flex items-center gap-2 px-3 py-2 text-sm font-mono border-b-2 transition-colors ${
                 !showPreview
-                  ? 'border-zinc-100 text-zinc-100'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-300'
+                  ? 'border-primary text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground/90'
               }`}
             >
               <Edit3 className="h-4 w-4" />
-              EDIT
+              Write
             </button>
             <button
               type="button"
               onClick={() => setShowPreview(true)}
               className={`flex items-center gap-2 px-3 py-2 text-sm font-mono border-b-2 transition-colors ${
                 showPreview
-                  ? 'border-zinc-100 text-zinc-100'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-300'
+                  ? 'border-primary text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground/90'
               }`}
             >
               <Eye className="h-4 w-4" />
-              PREVIEW
+              Preview
             </button>
           </div>
 
           <div className="p-6 pt-0">
             {showPreview ? (
-              <div className="prose prose-invert max-w-none min-h-[400px] p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
+              <div className="prose max-w-none min-h-[400px] p-4 bg-card/60 rounded-lg border border-border">
                 {content ? (
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {content}
                   </ReactMarkdown>
                 ) : (
-                  <p className="text-zinc-500 font-mono">// no content yet</p>
+                  <p className="text-muted-foreground font-mono">
+                    Nothing to preview yet.
+                  </p>
                 )}
               </div>
             ) : (
@@ -163,28 +166,28 @@ export function AdminEditBlog() {
 
 ---`}
                 required
-                className="min-h-[400px] bg-zinc-900 border-zinc-800 font-mono text-sm text-zinc-100 resize-y"
+                className="min-h-[400px] bg-secondary border-border font-mono text-sm text-foreground resize-y"
               />
             )}
           </div>
 
-          <div className="flex justify-end gap-3 px-6 pb-6 pt-4 border-t border-zinc-800">
+          <div className="flex justify-end gap-3 px-6 pb-6 pt-4 border-t border-border">
             <button
               type="button"
               onClick={handleBack}
-              className="font-mono border border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 px-4 py-2 rounded-md"
+              className="font-mono border border-border text-muted-foreground hover:text-foreground hover:bg-secondary px-4 py-2 rounded-md"
             >
-              CANCEL
+              Cancel
             </button>
             <Button
               type="submit"
-              className="font-mono bg-zinc-100 text-zinc-950 hover:bg-zinc-200"
+              className="font-mono bg-primary text-primary-foreground hover:bg-primary/90"
               disabled={addMutation.isPending || updateMutation.isPending}
             >
               {(addMutation.isPending || updateMutation.isPending) && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              {isNew ? 'PUBLISH' : 'SAVE'}
+              {isNew ? 'Publish' : 'Save changes'}
             </Button>
           </div>
         </form>

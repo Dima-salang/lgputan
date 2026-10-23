@@ -1,40 +1,48 @@
 import * as React from 'react'
+import { splitLinks } from '#/lib/data'
 import { trpc } from '#/integrations/trpc/react'
 import type { Project } from '#/models/project'
 import { Button } from '#/components/ui/button'
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '#/components/ui/table'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from '#/components/ui/dialog'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
-import { Plus, Pencil, Trash2, ExternalLink, Loader2, AlertCircle, Terminal } from 'lucide-react'
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  ExternalLink,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react'
 
 export function AdminProjects() {
   const [isOpen, setIsOpen] = React.useState(false)
   const [editingProject, setEditingProject] = React.useState<any>(null)
-  
+
   const utils = trpc.useUtils()
   const { data: projects, isLoading } = trpc.projects.getProjects.useQuery()
-  
+
   const addMutation = trpc.projects.addProject.useMutation({
     onSuccess: () => {
       utils.projects.getProjects.invalidate()
       setIsOpen(false)
       resetForm()
-    }
+    },
   })
 
   const updateMutation = trpc.projects.updateProject.useMutation({
@@ -42,20 +50,20 @@ export function AdminProjects() {
       utils.projects.getProjects.invalidate()
       setIsOpen(false)
       resetForm()
-    }
+    },
   })
 
   const deleteMutation = trpc.projects.deleteProject.useMutation({
     onSuccess: () => {
       utils.projects.getProjects.invalidate()
-    }
+    },
   })
 
   const [formData, setFormData] = React.useState({
     name: '',
     description: '',
     image_url: '',
-    url: ''
+    url: '',
   })
 
   const resetForm = () => {
@@ -69,7 +77,7 @@ export function AdminProjects() {
       name: project.name,
       description: project.description || '',
       image_url: project.image_url || '',
-      url: project.url || ''
+      url: project.url || '',
     })
     setIsOpen(true)
   }
@@ -86,94 +94,127 @@ export function AdminProjects() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/70" />
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-zinc-800 pb-4 flex items-center justify-between">
+      <div className="border-b border-border pb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold font-mono tracking-tight text-zinc-100">
-            PROJECTS_
+          <h2 className="font-display text-4xl leading-none text-foreground">
+            Projects
           </h2>
-          <p className="mt-1 text-sm text-zinc-500 font-mono">
-            &gt; manage portfolio projects
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            Add, edit, or remove the projects shown on the site.
           </p>
         </div>
-        <Dialog open={isOpen} onOpenChange={(open) => {
-          setIsOpen(open)
-          if (!open) resetForm()
-        }}>
+        <Dialog
+          open={isOpen}
+          onOpenChange={(open) => {
+            setIsOpen(open)
+            if (!open) resetForm()
+          }}
+        >
           <DialogTrigger asChild>
-            <Button className="gap-2 font-mono bg-zinc-100 text-zinc-950 hover:bg-zinc-200">
+            <Button className="gap-2 font-mono bg-primary text-primary-foreground hover:bg-primary/90">
               <Plus className="h-4 w-4" />
-              ADD_PROJECT
+              Add project
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-zinc-800">
+          <DialogContent className="sm:max-w-[500px] bg-background border-border">
             <DialogHeader>
-              <DialogTitle className="font-mono text-zinc-100">
-                {editingProject ? '// EDIT PROJECT' : '// NEW PROJECT'}
+              <DialogTitle className="font-mono text-foreground">
+                {editingProject ? 'Edit project' : 'New project'}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 pt-4">
               {(addMutation.error || updateMutation.error) && (
-                <div className="p-3 text-sm font-mono bg-red-950/30 border border-red-900/50 text-red-400 flex items-center gap-2">
+                <div className="p-3 text-sm font-mono bg-destructive/10 border border-destructive/30 text-destructive flex items-center gap-2">
                   <AlertCircle className="h-4 w-4" />
                   {addMutation.error?.message || updateMutation.error?.message}
                 </div>
               )}
               <div className="grid gap-2">
-                <Label htmlFor="name" className="font-mono text-zinc-400 text-xs uppercase">Name</Label>
+                <Label
+                  htmlFor="name"
+                  className="font-mono text-muted-foreground text-xs uppercase"
+                >
+                  Name
+                </Label>
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
-                  className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100"
+                  className="bg-secondary border-border font-mono text-foreground"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="description" className="font-mono text-zinc-400 text-xs uppercase">Description</Label>
+                <Label
+                  htmlFor="description"
+                  className="font-mono text-muted-foreground text-xs uppercase"
+                >
+                  Description
+                </Label>
                 <Input
                   id="description"
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100"
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  className="bg-secondary border-border font-mono text-foreground"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="image_url" className="font-mono text-zinc-400 text-xs uppercase">Image URL</Label>
+                <Label
+                  htmlFor="image_url"
+                  className="font-mono text-muted-foreground text-xs uppercase"
+                >
+                  Image URL
+                </Label>
                 <Input
                   id="image_url"
                   value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100"
+                  onChange={(e) =>
+                    setFormData({ ...formData, image_url: e.target.value })
+                  }
+                  className="bg-secondary border-border font-mono text-foreground"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="url" className="font-mono text-zinc-400 text-xs uppercase">Project URLs (comma-separated)</Label>
+                <Label
+                  htmlFor="url"
+                  className="font-mono text-muted-foreground text-xs uppercase"
+                >
+                  Project links
+                </Label>
                 <Input
                   id="url"
                   value={formData.url}
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, url: e.target.value })
+                  }
                   placeholder="https://github.com, https://demo.com"
-                  className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100"
+                  className="bg-secondary border-border font-mono text-foreground"
                 />
-                <p className="text-xs font-mono text-zinc-600">Separate multiple URLs with commas</p>
+                <p className="text-xs font-mono text-muted-foreground/70">
+                  Add one or more links, separated by commas.
+                </p>
               </div>
               <DialogFooter>
-                <Button 
-                  type="submit" 
-                  className="font-mono bg-zinc-100 text-zinc-950 hover:bg-zinc-200"
+                <Button
+                  type="submit"
+                  className="font-mono bg-primary text-primary-foreground hover:bg-primary/90"
                   disabled={addMutation.isPending || updateMutation.isPending}
                 >
                   {(addMutation.isPending || updateMutation.isPending) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {editingProject ? 'UPDATE' : 'CREATE'}
+                  {editingProject ? 'Save changes' : 'Create project'}
                 </Button>
               </DialogFooter>
             </form>
@@ -181,66 +222,86 @@ export function AdminProjects() {
         </Dialog>
       </div>
 
-      <div className="border border-zinc-800 bg-zinc-950">
+      <div className="overflow-x-auto border border-border bg-background">
         <Table>
           <TableHeader>
-            <TableRow className="border-zinc-800 hover:bg-zinc-900/50">
-              <TableHead className="font-mono text-zinc-500 text-xs uppercase">Project</TableHead>
-              <TableHead className="font-mono text-zinc-500 text-xs uppercase">URL</TableHead>
-              <TableHead className="text-right font-mono text-zinc-500 text-xs uppercase">Actions</TableHead>
+            <TableRow className="border-border hover:bg-card/60">
+              <TableHead className="font-mono text-muted-foreground text-xs uppercase">
+                Project
+              </TableHead>
+              <TableHead className="hidden font-mono text-muted-foreground text-xs uppercase sm:table-cell">
+                URL
+              </TableHead>
+              <TableHead className="text-right font-mono text-muted-foreground text-xs uppercase">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {projects?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center py-8 font-mono text-zinc-500">
-                  // no projects found
+                <TableCell
+                  colSpan={3}
+                  className="text-center py-8 font-mono text-muted-foreground"
+                >
+                  No projects yet.
                 </TableCell>
               </TableRow>
             ) : (
               projects?.map((project: Project) => (
-                <TableRow key={project.id} className="border-zinc-800 hover:bg-zinc-900/50">
+                <TableRow
+                  key={project.id}
+                  className="border-border hover:bg-card/60"
+                >
                   <TableCell>
-                    <div className="font-mono text-zinc-200">{project.name}</div>
-                    <div className="text-xs font-mono text-zinc-600 line-clamp-1 max-w-[300px]">
-                      {project.description || '// no description'}
+                    <div className="font-mono text-foreground">
+                      {project.name}
+                    </div>
+                    <div className="text-xs font-mono text-muted-foreground/70 line-clamp-1 max-w-[300px]">
+                      {project.description || 'No description'}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     {project.url ? (
                       <div className="flex flex-wrap gap-2">
-                        {project.url.split(',').map((url, idx) => (
-                          <a 
-                            key={idx}
-                            href={url.trim()} 
-                            target="_blank" 
+                        {splitLinks(project.url).map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
                             rel="noreferrer"
-                            className="flex items-center gap-1 text-sm font-mono text-zinc-400 hover:text-zinc-100"
+                            className="flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-foreground"
                           >
                             <ExternalLink className="h-3 w-3" />
-                            URL {idx + 1}
+                            {link.label}
                           </a>
                         ))}
                       </div>
                     ) : (
-                      <span className="font-mono text-xs text-zinc-600">null</span>
+                      <span className="font-mono text-xs text-muted-foreground/70">
+                        None
+                      </span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(project)}
-                        className="text-zinc-500 hover:text-zinc-100"
+                        aria-label={`Edit ${project.name}`}
+                        className="text-muted-foreground hover:text-foreground"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="text-zinc-500 hover:text-red-400"
-                        onClick={() => deleteMutation.mutate({ id: project.id })}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() =>
+                          deleteMutation.mutate({ id: project.id })
+                        }
+                        aria-label={`Delete ${project.name}`}
                         disabled={deleteMutation.isPending}
                       >
                         <Trash2 className="h-4 w-4" />

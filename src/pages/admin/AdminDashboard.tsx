@@ -1,114 +1,187 @@
-import * as React from 'react'
-import { trpc } from '#/integrations/trpc/react'
-import { 
-  Briefcase, 
-  FileText, 
-  Link2, 
+import { Link } from '@tanstack/react-router'
+import {
+  ArrowUpRight,
+  Briefcase,
+  FileText,
+  Link2,
+  Loader2,
   Table2,
-  Activity,
-  Loader2
 } from 'lucide-react'
+import { trpc } from '#/integrations/trpc/react'
+import { formatDate, isDraft } from '#/lib/data'
 
 export function AdminDashboard() {
-  const { data: projects, isLoading: projectsLoading } = trpc.projects.getProjects.useQuery()
-  const { data: skills, isLoading: skillsLoading } = trpc.skills.getSkills.useQuery()
+  const { data: projects, isLoading: projectsLoading } =
+    trpc.projects.getProjects.useQuery()
+  const { data: skills, isLoading: skillsLoading } =
+    trpc.skills.getSkills.useQuery()
   const { data: posts, isLoading: postsLoading } = trpc.blog.getPosts.useQuery()
-  const { data: links, isLoading: linksLoading } = trpc.quickLinks.getQuickLinks.useQuery()
+  const { data: links, isLoading: linksLoading } =
+    trpc.quickLinks.getQuickLinks.useQuery()
 
-  const stats = [
-    { name: 'Projects', value: projects?.length || 0, icon: Briefcase, color: 'text-amber-500' },
-    { name: 'Skills', value: skills?.length || 0, icon: Table2, color: 'text-cyan-500' },
-    { name: 'Blog Posts', value: posts?.length || 0, icon: FileText, color: 'text-violet-500' },
-    { name: 'Quick Links', value: links?.length || 0, icon: Link2, color: 'text-emerald-500' },
-  ]
-
-  const isLoading = projectsLoading || skillsLoading || postsLoading || linksLoading
+  const isLoading =
+    projectsLoading || skillsLoading || postsLoading || linksLoading
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
+        <Loader2
+          className="size-6 animate-spin text-muted-foreground"
+          aria-hidden="true"
+        />
+        <span className="sr-only">Loading overview</span>
       </div>
     )
   }
 
-  return (
-    <div className="space-y-8">
-      <div className="border-b border-zinc-800 pb-4">
-        <h2 className="text-2xl font-bold font-mono tracking-tight text-zinc-100">
-          DASHBOARD_
-        </h2>
-        <p className="mt-1 text-sm text-zinc-500 font-mono">
-          &gt; system overview
-        </p>
-      </div>
+  const stats = [
+    {
+      label: 'Projects',
+      value: projects?.length ?? 0,
+      href: '/admin/projects' as const,
+      icon: Briefcase,
+      tone: 'text-acid',
+    },
+    {
+      label: 'Skills',
+      value: skills?.length ?? 0,
+      href: '/admin/skills' as const,
+      icon: Table2,
+      tone: 'text-signal',
+    },
+    {
+      label: 'Blog posts',
+      value: posts?.length ?? 0,
+      href: '/admin/blog' as const,
+      icon: FileText,
+      tone: 'text-soft',
+    },
+    {
+      label: 'Quick links',
+      value: links?.length ?? 0,
+      href: '/admin/quick-links' as const,
+      icon: Link2,
+      tone: 'text-muted-foreground',
+    },
+  ]
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  const latestPosts = [...(posts ?? [])]
+    .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+    .slice(0, 4)
+
+  const latestProjects = [...(projects ?? [])].reverse().slice(0, 4)
+
+  return (
+    <div className="mx-auto max-w-5xl">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+        <div>
+          <h1 className="font-display text-4xl leading-none">
+            Overview<span className="text-acid">.</span>
+          </h1>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            Everything you can edit on the site
+          </p>
+        </div>
+      </header>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <div 
-            key={stat.name} 
-            className="group relative bg-zinc-900/50 border border-zinc-800 p-5 hover:border-zinc-700 transition-colors"
+          <Link
+            key={stat.label}
+            to={stat.href}
+            className="group border border-border bg-card/40 p-5 transition-colors hover:border-acid/40"
           >
-            <div className="absolute top-3 right-3">
-              <stat.icon className={`h-5 w-5 ${stat.color} opacity-60 group-hover:opacity-100 transition-opacity`} />
+            <div className="flex items-start justify-between gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                {stat.label}
+              </span>
+              <stat.icon className={`size-4 ${stat.tone}`} aria-hidden="true" />
             </div>
-            <div className="text-xs font-mono uppercase tracking-wider text-zinc-500 mb-1">
-              {stat.name}
-            </div>
-            <div className="text-3xl font-bold font-mono text-zinc-100">
+            <p className="mt-6 font-display text-5xl leading-none">
               {stat.value}
-            </div>
-            <div className="absolute bottom-0 left-0 h-0.5 w-full bg-zinc-800 group-hover:bg-zinc-700 transition-colors" />
-          </div>
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground transition-colors group-hover:text-acid">
+              Manage
+              <ArrowUpRight className="size-3" aria-hidden="true" />
+            </span>
+          </Link>
         ))}
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="bg-zinc-900/30 border border-zinc-800 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Activity className="h-4 w-4 text-zinc-500" />
-            <span className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
-              Recent Activity
-            </span>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm font-mono">
-              <span className="text-zinc-600">{'>'}</span>
-              <span className="text-zinc-400">system operational</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm font-mono">
-              <span className="text-zinc-600">{'>'}</span>
-              <span className="text-zinc-400">database connected</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm font-mono">
-              <span className="text-zinc-600">{'>'}</span>
-              <span className="text-zinc-400">auth enabled</span>
-            </div>
-          </div>
-        </div>
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <section className="border border-border bg-card/40">
+          <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-3">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              Latest writing
+            </h2>
+            <Link
+              to="/admin/blog"
+              className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-acid"
+            >
+              All posts
+            </Link>
+          </header>
+          <ul>
+            {latestPosts.length > 0 ? (
+              latestPosts.map((post) => (
+                <li
+                  key={post.id}
+                  className="flex items-center justify-between gap-4 border-b border-border px-5 py-3 last:border-0"
+                >
+                  <span className="truncate font-mono text-xs text-foreground">
+                    {post.title}
+                  </span>
+                  <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+                    {isDraft(post.content) ? (
+                      <span className="text-signal">Draft</span>
+                    ) : (
+                      formatDate(post.createdAt)
+                    )}
+                  </span>
+                </li>
+              ))
+            ) : (
+              <li className="px-5 py-8 text-center font-mono text-xs text-muted-foreground">
+                No posts yet.
+              </li>
+            )}
+          </ul>
+        </section>
 
-        <div className="bg-zinc-900/30 border border-zinc-800 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Activity className="h-4 w-4 text-zinc-500" />
-            <span className="text-sm font-mono text-zinc-400 uppercase tracking-wider">
-              Quick Stats
-            </span>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm font-mono">
-              <span className="text-zinc-500">total entries</span>
-              <span className="text-zinc-300">
-                {(projects?.length || 0) + (skills?.length || 0) + (posts?.length || 0) + (links?.length || 0)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-sm font-mono">
-              <span className="text-zinc-500">last updated</span>
-              <span className="text-zinc-300">
-                {new Date().toLocaleDateString()}
-              </span>
-            </div>
-          </div>
-        </div>
+        <section className="border border-border bg-card/40">
+          <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-3">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              Latest projects
+            </h2>
+            <Link
+              to="/admin/projects"
+              className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-acid"
+            >
+              All projects
+            </Link>
+          </header>
+          <ul>
+            {latestProjects.length > 0 ? (
+              latestProjects.map((project) => (
+                <li
+                  key={project.id}
+                  className="flex items-center justify-between gap-4 border-b border-border px-5 py-3 last:border-0"
+                >
+                  <span className="truncate font-mono text-xs text-foreground">
+                    {project.name}
+                  </span>
+                  <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+                    {formatDate(project.createdAt)}
+                  </span>
+                </li>
+              ))
+            ) : (
+              <li className="px-5 py-8 text-center font-mono text-xs text-muted-foreground">
+                No projects yet.
+              </li>
+            )}
+          </ul>
+        </section>
       </div>
     </div>
   )

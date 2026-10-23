@@ -52,39 +52,43 @@ export function AdminListBlog() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/70" />
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-zinc-800 pb-4 flex items-center justify-between">
+      <div className="border-b border-border pb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold font-mono tracking-tight text-zinc-100">
-            BLOG_POSTS_
+          <h2 className="font-display text-4xl leading-none text-foreground">
+            Blog posts
           </h2>
-          <p className="mt-1 text-sm text-zinc-500 font-mono">
-            &gt; manage articles
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            Write and edit posts. A post appears on the site once it has
+            content.
           </p>
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <button className="inline-flex items-center gap-2 font-mono bg-zinc-100 text-zinc-950 hover:bg-zinc-200 px-4 py-2 rounded-md">
+            <button className="inline-flex items-center gap-2 font-mono bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md">
               <Plus className="h-4 w-4" />
-              NEW_POST
+              New post
             </button>
           </DialogTrigger>
-          <DialogContent className="bg-zinc-950 border-zinc-800">
+          <DialogContent className="bg-background border-border">
             <DialogHeader>
-              <DialogTitle className="font-mono text-zinc-100">
-                CREATE_NEW_POST_
+              <DialogTitle className="font-mono text-foreground">
+                New post
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label htmlFor="title" className="font-mono text-zinc-400">
+                <Label
+                  htmlFor="title"
+                  className="font-mono text-muted-foreground"
+                >
                   TITLE
                 </Label>
                 <Input
@@ -92,7 +96,7 @@ export function AdminListBlog() {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="Enter post title..."
-                  className="bg-zinc-900 border-zinc-800 font-mono text-zinc-100"
+                  className="bg-secondary border-border font-mono text-foreground"
                   onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
                 />
               </div>
@@ -100,19 +104,19 @@ export function AdminListBlog() {
                 <Button
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
-                  className="font-mono border-zinc-700 text-zinc-400"
+                  className="font-mono border-border text-muted-foreground"
                 >
-                  CANCEL
+                  Cancel
                 </Button>
                 <Button
                   onClick={handleCreate}
                   disabled={!newTitle.trim() || isCreating}
-                  className="font-mono bg-zinc-100 text-zinc-950"
+                  className="font-mono bg-primary text-primary-foreground"
                 >
                   {isCreating ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : null}
-                  CREATE
+                  Create
                 </Button>
               </div>
             </div>
@@ -120,17 +124,17 @@ export function AdminListBlog() {
         </Dialog>
       </div>
 
-      <div className="border border-zinc-800 bg-zinc-950">
+      <div className="overflow-x-auto border border-border bg-background">
         <Table>
           <TableHeader>
-            <TableRow className="border-zinc-800 hover:bg-zinc-900/50">
-              <TableHead className="font-mono text-zinc-500 text-xs uppercase">
+            <TableRow className="border-border hover:bg-card/60">
+              <TableHead className="font-mono text-muted-foreground text-xs uppercase">
                 Title
               </TableHead>
-              <TableHead className="font-mono text-zinc-500 text-xs uppercase">
+              <TableHead className="hidden font-mono text-muted-foreground text-xs uppercase sm:table-cell">
                 Created
               </TableHead>
-              <TableHead className="text-right font-mono text-zinc-500 text-xs uppercase">
+              <TableHead className="text-right font-mono text-muted-foreground text-xs uppercase">
                 Actions
               </TableHead>
             </TableRow>
@@ -140,26 +144,26 @@ export function AdminListBlog() {
               <TableRow>
                 <TableCell
                   colSpan={3}
-                  className="text-center py-8 font-mono text-zinc-500"
+                  className="text-center py-8 font-mono text-muted-foreground"
                 >
-                  // no posts found
+                  No posts yet.
                 </TableCell>
               </TableRow>
             ) : (
               posts?.map((post) => (
                 <TableRow
                   key={post.id}
-                  className="border-zinc-800 hover:bg-zinc-900/50"
+                  className="border-border hover:bg-card/60"
                 >
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <FileText className="h-4 w-4 text-zinc-600" />
-                      <span className="font-mono text-zinc-200">
+                      <FileText className="h-4 w-4 text-muted-foreground/70" />
+                      <span className="font-mono text-foreground">
                         {post.title}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="font-mono text-zinc-500 text-sm">
+                  <TableCell className="hidden font-mono text-muted-foreground text-sm sm:table-cell">
                     {post.createdAt
                       ? new Date(post.createdAt).toLocaleDateString()
                       : 'N/A'}
@@ -168,15 +172,17 @@ export function AdminListBlog() {
                     <div className="flex justify-end gap-2">
                       <a
                         href={'/admin/blog/' + post.id.toString()}
-                        className="text-zinc-500 hover:text-zinc-100 p-2"
+                        className="text-muted-foreground hover:text-foreground p-2"
+                        aria-label={`Edit ${post.title}`}
                       >
                         <Pencil className="h-4 w-4" />
                       </a>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-zinc-500 hover:text-red-400"
+                        className="text-muted-foreground hover:text-destructive"
                         onClick={() => deleteMutation.mutate({ id: post.id })}
+                        aria-label={`Delete ${post.title}`}
                         disabled={deleteMutation.isPending}
                       >
                         <Trash2 className="h-4 w-4" />
