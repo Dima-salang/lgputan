@@ -1,43 +1,114 @@
+import { Link } from '@tanstack/react-router'
+import { ArrowUpRight, Github, Mail } from 'lucide-react'
+import { pages, site } from '#/content/site'
+import { LocalTime } from './site/LocalTime'
+
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-20 border-t border-[var(--line)] px-4 pb-14 pt-10 text-[var(--sea-ink-soft)]">
-      <div className="page-wrap flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-        <p className="m-0 text-sm">
-          &copy; {year} Your name here. All rights reserved.
-        </p>
-        <p className="island-kicker m-0">Built with TanStack Start</p>
-      </div>
-      <div className="mt-4 flex justify-center gap-4">
-        <a
-          href="https://x.com/tan_stack"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)]"
-        >
-          <span className="sr-only">Follow TanStack on X</span>
-          <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
-            <path
-              fill="currentColor"
-              d="M12.6 1h2.2L10 6.48 15.64 15h-4.41L7.78 9.82 3.23 15H1l5.14-5.84L.72 1h4.52l3.12 4.73L12.6 1zm-.77 12.67h1.22L4.57 2.26H3.26l8.57 11.41z"
-            />
-          </svg>
-        </a>
-        <a
-          href="https://github.com/TanStack"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)]"
-        >
-          <span className="sr-only">Go to TanStack GitHub</span>
-          <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
-            <path
-              fill="currentColor"
-              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-            />
-          </svg>
-        </a>
+    <footer className="mt-24 border-t border-border">
+      <div className="page-shell py-14">
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-5">
+            <p className="font-mono text-sm text-foreground">
+              {site.wordmark}
+              <span className="text-acid">.</span>
+            </p>
+            <p className="mt-5 font-display text-4xl leading-[1.05] sm:text-5xl">
+              Small tools,
+              <br />
+              <span className="italic text-muted-foreground">carefully made.</span>
+            </p>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
+              {site.shortRole}, based in {site.location}.
+            </p>
+          </div>
+
+          <div className="md:col-span-2">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              Pages
+            </h2>
+            <ul className="mt-4 space-y-2.5">
+              {pages.map((page) => (
+                <li key={page.to}>
+                  <Link
+                    to={page.to}
+                    className="text-sm text-foreground/80 transition-colors hover:text-acid"
+                  >
+                    {page.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              Find me
+            </h2>
+            <ul className="mt-4 space-y-2.5">
+              <li>
+                <a
+                  href={site.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
+                >
+                  <Github className="size-3.5" aria-hidden="true" />
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
+                >
+                  <Mail className="size-3.5" aria-hidden="true" />
+                  Email
+                </a>
+              </li>
+              <li>
+                <a
+                  href={site.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-acid"
+                >
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                  {site.githubHandle}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-3">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              Local time
+            </h2>
+            <p className="mt-4 font-mono text-sm text-foreground">
+              <LocalTime />
+              <span className="ml-2 text-muted-foreground">
+                {site.location}
+              </span>
+            </p>
+            <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+              {site.availability}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {site.name}
+          </p>
+          <div className="flex items-center gap-5">
+            <span>Designed and built by Luis</span>
+            <Link to="/admin" className="transition-colors hover:text-acid">
+              Admin
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   )

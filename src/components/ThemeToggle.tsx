@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react'
+import { Monitor, Moon, Sun } from 'lucide-react'
 
 type ThemeMode = 'light' | 'dark' | 'auto'
 
 function getInitialMode(): ThemeMode {
-  if (typeof window === 'undefined') {
-    return 'auto'
-  }
+  if (typeof window === 'undefined') return 'dark'
 
   const stored = window.localStorage.getItem('theme')
   if (stored === 'light' || stored === 'dark' || stored === 'auto') {
     return stored
   }
 
-  return 'auto'
+  return 'dark'
 }
 
 function applyThemeMode(mode: ThemeMode) {
@@ -31,8 +30,18 @@ function applyThemeMode(mode: ThemeMode) {
   document.documentElement.style.colorScheme = resolved
 }
 
-export default function ThemeToggle() {
-  const [mode, setMode] = useState<ThemeMode>('auto')
+const MODE_LABEL: Record<ThemeMode, string> = {
+  dark: 'Dark',
+  light: 'Light',
+  auto: 'System',
+}
+
+export default function ThemeToggle({
+  className = '',
+}: {
+  className?: string
+}) {
+  const [mode, setMode] = useState<ThemeMode>('dark')
 
   useEffect(() => {
     const initialMode = getInitialMode()
@@ -41,41 +50,37 @@ export default function ThemeToggle() {
   }, [])
 
   useEffect(() => {
-    if (mode !== 'auto') {
-      return
-    }
+    if (mode !== 'auto') return
 
     const media = window.matchMedia('(prefers-color-scheme: dark)')
     const onChange = () => applyThemeMode('auto')
 
     media.addEventListener('change', onChange)
-    return () => {
-      media.removeEventListener('change', onChange)
-    }
+    return () => media.removeEventListener('change', onChange)
   }, [mode])
 
   function toggleMode() {
     const nextMode: ThemeMode =
-      mode === 'light' ? 'dark' : mode === 'dark' ? 'auto' : 'light'
+      mode === 'dark' ? 'light' : mode === 'light' ? 'auto' : 'dark'
     setMode(nextMode)
     applyThemeMode(nextMode)
     window.localStorage.setItem('theme', nextMode)
   }
 
-  const label =
-    mode === 'auto'
-      ? 'Theme mode: auto (system). Click to switch to light mode.'
-      : `Theme mode: ${mode}. Click to switch mode.`
+  const Icon = mode === 'dark' ? Moon : mode === 'light' ? Sun : Monitor
+  const next = MODE_LABEL[
+    mode === 'dark' ? 'light' : mode === 'light' ? 'auto' : 'dark'
+  ]
 
   return (
     <button
       type="button"
       onClick={toggleMode}
-      aria-label={label}
-      title={label}
-      className="rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] px-3 py-1.5 text-sm font-semibold text-[var(--sea-ink)] shadow-[0_8px_22px_rgba(30,90,72,0.08)] transition hover:-translate-y-0.5"
+      aria-label={`Theme: ${MODE_LABEL[mode]}. Switch to ${next}.`}
+      title={`Theme: ${MODE_LABEL[mode]} — click for ${next}`}
+      className={`grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/50 hover:text-foreground ${className}`}
     >
-      {mode === 'auto' ? 'Auto' : mode === 'dark' ? 'Dark' : 'Light'}
+      <Icon className="size-4" aria-hidden="true" />
     </button>
   )
 }

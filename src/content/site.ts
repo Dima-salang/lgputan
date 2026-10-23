@@ -61,4 +61,4 @@ export const pages = [
   { label: 'Skills', to: '/skills', description: 'Tools I work with' },
   { label: 'Writing', to: '/blog', description: 'Notes and write-ups' },
   { label: 'About', to: '/about', description: 'A little more about me' },
-]
+] as const

@@ -1,74 +1,180 @@
-import { Link } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import { Link, useRouterState } from '@tanstack/react-router'
+import { ArrowUpRight, Menu, Search, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
-import { Terminal, Folder, FileText, Code2, Settings } from 'lucide-react'
+import { CommandPalette } from './CommandPalette'
+import { pages, site } from '#/content/site'
+
+function openPalette() {
+  window.dispatchEvent(new Event('open-command-palette'))
+}
 
 export default function Header() {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [menuOpen])
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] px-4 backdrop-blur-lg">
-      <nav className="page-wrap flex flex-wrap items-center gap-x-3 gap-y-2 py-3 sm:py-4">
-        <h2 className="m-0 flex-shrink-0 text-base font-semibold tracking-tight">
-          <Link to="/" className="nav-logo">
-            <Terminal className="size-4 text-[var(--lagoon)]" />
-            <span className="font-mono text-sm">~/portfolio</span>
-            <span className="animate-pulse text-[var(--lagoon)]">_</span>
-          </Link>
-        </h2>
+    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
+      <div className="page-shell flex h-16 items-center gap-8">
+        <Link
+          to="/"
+          className="group inline-flex shrink-0 items-baseline gap-0.5 font-mono text-sm tracking-tight"
+          aria-label={`${site.wordmark} — home`}
+        >
+          <span className="text-foreground transition-colors group-hover:text-acid">
+            {site.wordmark}
+          </span>
+          <span className="text-acid" aria-hidden="true">
+            .
+          </span>
+        </Link>
 
-        <div className="ml-auto flex items-center gap-1.5 sm:ml-0 sm:gap-2">
+        <nav
+          className="hidden items-center gap-7 md:flex"
+          aria-label="Main navigation"
+        >
+          {pages.map((page) => (
+            <Link
+              key={page.to}
+              to={page.to}
+              className="nav-link"
+              activeProps={{ className: 'nav-link is-active' }}
+            >
+              {page.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={openPalette}
+            className="hidden items-center gap-2 border border-border bg-card/60 px-2.5 py-1.5 text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground sm:flex"
+            aria-label="Open search menu"
+          >
+            <Search className="size-3.5" aria-hidden="true" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.12em]">
+              Search
+            </span>
+            <kbd className="kbd ml-1">⌘K</kbd>
+          </button>
+
+          <button
+            type="button"
+            onClick={openPalette}
+            className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground sm:hidden"
+            aria-label="Open search menu"
+          >
+            <Search className="size-4" aria-hidden="true" />
+          </button>
+
           <ThemeToggle />
-        </div>
 
-        <div className="order-3 flex w-full flex-wrap items-center gap-x-1 gap-y-1 pb-1 text-sm font-mono sm:order-2 sm:w-auto sm:flex-nowrap sm:pb-0">
-          <Link
-            to="/"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground md:hidden"
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
-            <Folder className="size-3.5" />
-            <span>home</span>
-          </Link>
-          <Link
-            to="/projects"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            <Code2 className="size-3.5" />
-            <span>projects</span>
-          </Link>
-          <Link
-            to="/skills"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            <FileText className="size-3.5" />
-            <span>skills</span>
-          </Link>
-          <Link
-            to="/blog"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            <FileText className="size-3.5" />
-            <span>blog</span>
-          </Link>
-          <Link
-            to="/about"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            <FileText className="size-3.5" />
-            <span>about</span>
-          </Link>
-          <Link
-            to="/admin"
-            className="nav-link text-[var(--muted-foreground)] hover:text-[var(--destructive)]"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            <Settings className="size-3.5" />
-            <span>admin</span>
-          </Link>
+            <Menu className="size-4" aria-hidden="true" />
+          </button>
         </div>
-      </nav>
+      </div>
+
+      {menuOpen ? (
+        <div
+          id="mobile-menu"
+          className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-background md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+        >
+          <div className="page-shell flex h-16 shrink-0 items-center justify-between border-b border-border">
+            <span className="font-mono text-sm">
+              {site.wordmark}
+              <span className="text-acid">.</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              autoFocus
+              className="grid size-9 place-items-center border border-border text-muted-foreground transition-colors hover:border-acid/40 hover:text-foreground"
+              aria-label="Close menu"
+            >
+              <X className="size-4" aria-hidden="true" />
+            </button>
+          </div>
+
+          <nav className="page-shell flex-1 py-4" aria-label="Mobile navigation">
+            {pages.map((page, index) => (
+              <Link
+                key={page.to}
+                to={page.to}
+                className="group flex items-baseline justify-between gap-4 border-b border-border py-5"
+              >
+                <span className="font-display text-4xl leading-none transition-colors group-hover:text-acid">
+                  {page.label}
+                </span>
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  0{index + 1}
+                </span>
+              </Link>
+            ))}
+          </nav>
+
+          <div className="page-shell shrink-0 space-y-3 border-t border-border py-6">
+            <a
+              href={`mailto:${site.email}`}
+              className="flex items-center justify-between font-mono text-xs text-muted-foreground transition-colors hover:text-acid"
+            >
+              {site.email}
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </a>
+            <a
+              href={site.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between font-mono text-xs text-muted-foreground transition-colors hover:text-acid"
+            >
+              GitHub / {site.githubHandle}
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </a>
+            <div className="flex items-center justify-between pt-2">
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                Theme
+              </span>
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <CommandPalette />
     </header>
   )
 }
