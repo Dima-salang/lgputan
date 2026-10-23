@@ -10,10 +10,14 @@ export const Route = createFileRoute('/blog/$id')({
   component: BlogPostPage,
 })
 
-export function BlogPostPage() {
+function BlogPostPage() {
   const { id } = Route.useParams()
   const postId = Number.parseInt(id, 10)
-  const { data: post, isLoading, error } = trpc.blog.getPost.useQuery(
+  const {
+    data: post,
+    isLoading,
+    error,
+  } = trpc.blog.getPost.useQuery(
     { id: postId },
     { enabled: Number.isFinite(postId) },
   )

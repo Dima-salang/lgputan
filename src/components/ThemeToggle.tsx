@@ -68,9 +68,8 @@ export default function ThemeToggle({
   }
 
   const Icon = mode === 'dark' ? Moon : mode === 'light' ? Sun : Monitor
-  const next = MODE_LABEL[
-    mode === 'dark' ? 'light' : mode === 'light' ? 'auto' : 'dark'
-  ]
+  const next =
+    MODE_LABEL[mode === 'dark' ? 'light' : mode === 'light' ? 'auto' : 'dark']
 
   return (
     <button
