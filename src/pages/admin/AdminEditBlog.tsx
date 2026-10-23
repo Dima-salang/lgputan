@@ -4,16 +4,13 @@ import { trpc } from '#/integrations/trpc/react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
-import { Textarea } from '#/components/ui/textarea'
-import { ArrowLeft, Loader2, Eye, Edit3 } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import { RichTextEditor } from '#/components/admin/RichTextEditor'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 
 export function AdminEditBlog() {
   const { id } = useParams({ strict: false })
   const isNew = !id || id === 'new'
   const utils = trpc.useUtils()
-  const [showPreview, setShowPreview] = useState(false)
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -103,72 +100,14 @@ export function AdminEditBlog() {
             />
           </div>
 
-          <div className="flex items-center gap-2 px-6 border-b border-border">
-            <button
-              type="button"
-              onClick={() => setShowPreview(false)}
-              className={`flex items-center gap-2 px-3 py-2 text-sm font-mono border-b-2 transition-colors ${
-                !showPreview
-                  ? 'border-primary text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground/90'
-              }`}
-            >
-              <Edit3 className="h-4 w-4" />
-              Write
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowPreview(true)}
-              className={`flex items-center gap-2 px-3 py-2 text-sm font-mono border-b-2 transition-colors ${
-                showPreview
-                  ? 'border-primary text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground/90'
-              }`}
-            >
-              <Eye className="h-4 w-4" />
-              Preview
-            </button>
-          </div>
-
-          <div className="p-6 pt-0">
-            {showPreview ? (
-              <div className="prose max-w-none min-h-[400px] p-4 bg-card/60 rounded-lg border border-border">
-                {content ? (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {content}
-                  </ReactMarkdown>
-                ) : (
-                  <p className="text-muted-foreground font-mono">
-                    Nothing to preview yet.
-                  </p>
-                )}
-              </div>
-            ) : (
-              <Textarea
-                id="content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder={`Write your content here using Markdown...
-
-# Heading 1
-## Heading 2
-
-**bold text** and *italic text*
-
-- List item 1
-- List item 2
-
-[link text](https://example.com)
-
-\`code\`
-
-> quote
-
----`}
-                required
-                className="min-h-[400px] bg-secondary border-border font-mono text-sm text-foreground resize-y"
-              />
-            )}
+          <div className="grid gap-2 px-6">
+            <span className="font-mono text-muted-foreground text-xs uppercase">
+              Content
+            </span>
+            <RichTextEditor value={content} onChange={setContent} />
+            <p className="font-mono text-[10px] text-muted-foreground">
+              Use the toolbar to add headings, lists, links, and code.
+            </p>
           </div>
 
           <div className="flex justify-end gap-3 px-6 pb-6 pt-4 border-t border-border">

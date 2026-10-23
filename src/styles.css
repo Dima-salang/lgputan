@@ -442,73 +442,6 @@
     white-space: pre;
   }
 
-  /* Blog body */
-  .prose {
-    --tw-prose-body: var(--muted-foreground);
-    --tw-prose-headings: var(--foreground);
-    --tw-prose-lead: var(--muted-foreground);
-    --tw-prose-links: var(--acid);
-    --tw-prose-bold: var(--foreground);
-    --tw-prose-counters: var(--muted-foreground);
-    --tw-prose-bullets: var(--acid);
-    --tw-prose-hr: var(--border);
-    --tw-prose-quotes: var(--foreground);
-    --tw-prose-quote-borders: var(--acid);
-    --tw-prose-captions: var(--muted-foreground);
-    --tw-prose-code: var(--foreground);
-    --tw-prose-pre-code: var(--foreground);
-    --tw-prose-pre-bg: var(--surface);
-    --tw-prose-th-borders: var(--border);
-    --tw-prose-td-borders: var(--border);
-    max-width: 68ch;
-    font-family: var(--font-sans);
-    font-size: 1.0625rem;
-    line-height: 1.78;
-  }
-
-  .prose :where(h1, h2, h3, h4):not(:where([class~='not-prose'] *)) {
-    font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-
-  .prose :where(code):not(:where(pre *)) {
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--secondary);
-    padding: 0.1rem 0.35rem;
-    font-size: 0.85em;
-    font-weight: 400;
-  }
-
-  .prose :where(code):not(:where(pre *))::before,
-  .prose :where(code):not(:where(pre *))::after {
-    content: none;
-  }
-
-  .prose :where(pre) {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--surface);
-  }
-
-  .prose :where(blockquote) {
-    font-style: normal;
-    border-left-width: 2px;
-    background: color-mix(in srgb, var(--secondary) 55%, transparent);
-    padding: 0.25rem 1.1rem;
-  }
-
-  .prose :where(a) {
-    text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-  }
-
-  .prose :where(table) {
-    font-size: 0.9rem;
-  }
-
   /* Native dialog */
   dialog {
     padding: 0;
@@ -523,6 +456,96 @@
     background: rgba(0, 0, 0, 0.72);
     backdrop-filter: blur(6px);
   }
+}
+
+/* ------------------------------------------------------------------ *
+ * Article body
+ * These rules stay unlayered so they win over the typography plugin's
+ * default prose palette.
+ * ------------------------------------------------------------------ */
+
+.prose {
+  --tw-prose-body: var(--muted-foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--acid);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--acid);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--acid);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--surface);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+  max-width: 68ch;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.78;
+}
+
+.prose :where(h1, h2, h3, h4):not(:where([class~='not-prose'] *)) {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.prose :where(code):not(:where(pre *)) {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--secondary);
+  padding: 0.1rem 0.35rem;
+  font-size: 0.85em;
+  font-weight: 400;
+}
+
+.prose :where(code):not(:where(pre *))::before,
+.prose :where(code):not(:where(pre *))::after {
+  content: none;
+}
+
+.prose :where(pre) {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.prose :where(blockquote) {
+  font-style: normal;
+  border-left-width: 2px;
+  background: color-mix(in srgb, var(--secondary) 55%, transparent);
+  padding: 0.25rem 1.1rem;
+}
+
+.prose :where(a) {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.prose :where(table) {
+  font-size: 0.9rem;
+}
+
+/* Rich text editor */
+.rich-editor .ProseMirror {
+  cursor: text;
+  color: var(--foreground);
+}
+
+.rich-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.rich-editor .ProseMirror-selectednode {
+  outline: 1px solid var(--acid);
 }
 
 /* ------------------------------------------------------------------ *
